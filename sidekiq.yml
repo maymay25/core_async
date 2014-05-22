@@ -1,0 +1,21 @@
+---
+:concurrency: 25
+:queues:
+  - default
+  - track_on
+  - track_off
+  - track_played
+  - message_created
+  - album_off
+  - album_updated
+  - album_resend
+  - comment_created
+  - favorite_created
+  - following_created
+  - following_destroyed
+  - relay_created
+  - dig_status_switch
+  - messages_send
+  - backend
+  - user_off
+  - user_on
