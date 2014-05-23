@@ -1,38 +1,46 @@
 core_async
 =========
 
-### deploy ( sidekiq + monitor ) ###
+### production deploy  ###
 
-ruby deploy.rb start
+# start all service #
 
-ruby deploy.rb stop
-
-ruby deploy.rb restart
+ruby deploy.rb start all
 
 
-### only monitor ###
+# web #
 
-kill `cat /tmp/core_async.pid`
+ruby deploy.rb start web
 
-cd /srv/core_async && bundle exec unicorn -c /srv/core_async/config/unicorn.rb -D
+ruby deploy.rb stop web
 
-kill -USR2 `cat /tmp/core_async.pid`
+ruby deploy.rb restart web
 
 
+# schedule #
 
-### development ###
+ruby deploy.rb start schedule
 
-RACK_ENV=development ruby deploy.rb start
+ruby deploy.rb stop schedule
 
-RACK_ENV=development ruby deploy.rb stop
+ruby deploy.rb restart schedule
 
-RACK_ENV=development ruby deploy.rb restart
+
+# workers #
+
+ruby deploy.rb start workers 2
+
+
+### test service ###
+
+RACK_ENV=development ruby deploy.rb [?ARGV]
+
 
 
 ### dev on windows ###
 
 ## sidekiq ###
-bundle exec sidekiq -r ./config/application.rb -C ./sidekiq.yml -e development
+bundle exec sidekiq -r ./config/application.rb -C ./sidekiq.yml
 
 ## monitor ##
 bundle exec thin start -p 9090

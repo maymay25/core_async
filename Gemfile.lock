@@ -21,11 +21,16 @@ GEM
       amq-protocol (>= 1.9.2)
     celluloid (0.15.2)
       timers (~> 1.1.0)
+    clockwork (0.7.5)
+      activesupport
+      tzinfo
     connection_pool (2.0.0)
     daemons (1.1.9)
     eventmachine (1.0.3-x86-mingw32)
     feed (0.0.4)
       thrift (~> 0.9.0)
+    hbaserb (0.0.5)
+      thrift (>= 0.4.0)
     hessian2 (2.0.5)
       bigdecimal
     i18n (0.6.9)
@@ -84,7 +89,6 @@ GEM
     thrift-client (0.3.4)
       thrift (~> 0.9.1)
     tilt (1.4.1)
-    timerizer (0.1.4)
     timers (1.1.0)
     tzinfo (0.3.39)
     will_paginate (3.0.5)
@@ -100,7 +104,9 @@ PLATFORMS
 DEPENDENCIES
   activerecord (~> 3.2)
   bunny
+  clockwork
   feed (>= 0.0.2)
+  hbaserb
   hessian2
   idservice_client
   mysql2
@@ -119,7 +125,6 @@ DEPENDENCIES
   thin
   thrift (~> 0.9.0)
   thrift-client
-  timerizer
   will_paginate (~> 3.0)
   wordfilter_client (>= 0.0.2)
   xunch (>= 0.0.6)

@@ -1,6 +1,6 @@
-puts 'starting...'
+puts 'starting core_async monitor web server...'
 
-require File.expand_path('../config/application',  __FILE__)
+require File.expand_path('../config/application.rb',  __FILE__)
 
 require 'sidekiq/web'
 

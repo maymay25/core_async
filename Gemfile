@@ -15,7 +15,7 @@ gem 'sinarey_support',require: []
 
 gem 'sinatra-contrib'
 
-gem 'timerizer'
+#gem 'timerizer'
 
 gem 'settingslogic'
 gem 'oj'
@@ -51,6 +51,12 @@ gem 'wordfilter_client', '>=0.0.2'
 
 gem 'xunch', '>=0.0.6'
 
+gem 'hbaserb'
+
 #rake tasks
 gem 'rake'
 gem 'activerecord', '~> 3.2', require: []
+
+
+#schedule
+gem 'clockwork'
