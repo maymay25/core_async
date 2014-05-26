@@ -53,6 +53,8 @@ gem 'xunch', '>=0.0.6'
 
 gem 'hbaserb'
 
+gem 'writeexcel'
+
 #rake tasks
 gem 'rake'
 gem 'activerecord', '~> 3.2', require: []

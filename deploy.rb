@@ -1,20 +1,43 @@
 
 
 app_root = File.expand_path('..',__FILE__)
+env = ENV['RACK_ENV']||'production'
 
-command = ARGV[0]
-type = ARGV[1]
+command, type = ARGV[0], ARGV[1]
 
 case type
 when 'workers'
   process_sum = (tmp=ARGV[2].to_i)>0 ? tmp : 1
+  case command
+  when 'start'
   process_sum.times do
-    system("ruby #{app_root}/config/sidekiq_workers.rb #{command}")
+    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_workers.rb")
+  end
+  when 'stop'
+    #TODO
+  when 'restart'
+    #TODO
   end
 when 'web'
-  system("ruby #{app_root}/config/sidekiq_web.rb #{command}")
+  case command
+  when 'start'
+    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_web.rb")
+  when 'stop'
+    #TODO
+  when 'restart'
+    #TODO
+  end
 when 'schedule'
-  system("ruby #{app_root}/config/sidekiq_schedule.rb #{command}")
+  case command
+  when 'start'
+    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_common_schedule.rb")
+    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_news_rss_schedule.rb")
+  when 'stop'
+    #TODO
+  when 'restart'
+    #TODO
+  end
+
 else
   msg = <<-EOF
 
@@ -34,7 +57,7 @@ else
 
     tips :
 
-      1. default ENVIRONMENT is `production`. 
+      1. default ENVIRONMENT is `production`. change it with RACK_ENV
 
          >>  RACK_ENV=development ruby deploy.rb *ARGV
 

@@ -20,4 +20,6 @@
   - backend
   - user_off
   - user_on
-  - schedule
+  - common_schedule
+  - news_rss_schedule
+  - subapp_schedule
