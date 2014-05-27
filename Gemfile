@@ -25,7 +25,7 @@ gem "sanitize"
 
 gem 'bunny' 
 
-gem 'feed', '>= 0.0.2'
+#gem 'feed', '>= 0.0.2'
 
 gem 'hessian2'
 
