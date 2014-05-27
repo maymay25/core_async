@@ -46,12 +46,27 @@ module CoreAsync
           $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash), content_type: 'text/plain', persistent: true)
         end
       end
-      logger.info "update_track_pic_category uid:#{uid}, update album_id:#{album_id}, uppic:#{update_pic}, upcat:#{update_category}"
+      logger.info "#{Time.now} update_track_pic_category uid:#{uid}, update album_id:#{album_id}, uppic:#{update_pic}, upcat:#{update_category}"
     rescue Exception => e
       logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
+    def user_audit(uid,nickname,logoPic,personDescribe,create_time)
+      ApprovingUser.create(
+        user_id: uid,
+        approve_group_id: nil,
+        nickname: nickname,
+        cover_path: logoPic,
+        intro: personDescribe,
+        user_created_at: create_time
+      )
+      
+      logger.info "#{Time.now} #{user_audit} #{uid} #{nickname} #{create_time}"
+    rescue Exception => e
+      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      raise e
+    end
 
     private
 

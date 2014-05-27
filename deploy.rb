@@ -30,8 +30,7 @@ when 'web'
 when 'schedule'
   case command
   when 'start'
-    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_common_schedule.rb")
-    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_news_rss_schedule.rb")
+    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_schedule.rb")
   when 'stop'
     #TODO
   when 'restart'

@@ -830,7 +830,7 @@ module CoreAsync
       raise e
     end
 
-    def login_day
+    def login_day_download
 
       client = HbaseClient.new(Settings.hbase_ip, 9090)
       client.start
@@ -869,7 +869,7 @@ module CoreAsync
       # num = 0
 
       while true
-        result = loop_get(workbook, 1, client, cid)
+        result = loop_get_login(workbook, 1, client, cid)
         # break if num == 0
         break if result == []
         # num += 1
@@ -881,6 +881,54 @@ module CoreAsync
     rescue Exception => e
       logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
+    end
+
+    def track_day_download
+      client = HbaseClient.new(Settings.hbase_ip, 9090)
+      client.start
+
+      time = Time.now.to_date - 1.day
+      stime = time.to_s.gsub("-","")
+      # cid = client.get_scanner_id("hb_play_track_day", "#{stime}_0_0","#{stime}_0_:")
+
+      # # time = ARGV[0].to_date
+      # # stime = ARGV[0].gsub("-","")
+      # # cid = client.get_scanner_id("hb_play_track_day", "#{stime}_0_0", "#{stime}_0_:")
+
+      # 新方法取scanner_id
+      tscan = Apache::Hadoop::Hbase::Thrift::TScan.new()
+      tscan.startRow = "#{stime}_0_0"
+      tscan.stopRow = "#{stime}_0_:"
+      tscan.caching = 1000
+      cid = client.get_scanner_id2("hb_play_track_day", tscan)  
+      
+      #根目录是否存在，不存在则新建
+      unless Dir.exist?(Settings.stat_root)
+        FileUtils.mkdir_p(Settings.stat_root)
+      end
+      
+      #目录不存在时新建
+      unless Dir.exist?("#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}")
+        FileUtils.mkdir_p("#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}")
+      end
+
+      workbook = WriteExcel.new("#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}/#{time}_track.xls")
+
+      logger.info "#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}/#{time}_track.xls" 
+
+      # num = 0
+
+      while true
+        result = loop_get(workbook, 1, client, cid)
+        # break if num == 0
+        break if result == []
+        # num += 1
+      end
+
+      workbook.close
+      
+      client.close_scan(cid)
+      client.close
     end
 
     private
@@ -896,8 +944,8 @@ module CoreAsync
     end
 
 
-    #循环调用此方法，读取数据 used by `login_day`
-    def loop_get(wb, len, client, cid)
+    #循环调用此方法，读取数据 used by `login_day_download`
+    def loop_get_login(wb, len, client, cid)
       worksheet = wb.add_worksheet
 
       headings = %w(prefix 用户id 首次登陆时间 最后登陆时间 web次数 ios次数 android次数 其他次数) 
@@ -911,6 +959,36 @@ module CoreAsync
         break if len == 65001
         status = client.get_login(cid)
         # p status
+        break if status == []
+        status.each_with_index do |f,i|
+          worksheet.write(len + i, 0, f)
+        end
+        len += 1000
+      end
+
+      # len = 1
+      status
+    end
+
+    #循环调用此方法，读取数据 used by `track_day_download`
+    def loop_get_track(wb, len, client, cid, is_subapp = false)
+      worksheet = wb.add_worksheet
+
+      headings = %w(声音名称 分类 是否爬虫 发布用户 发布时间 
+                    收听总人数 web端收听人数 mb端收听人数 iphone收听人数 ipad收听人数 chezai收听人数 android收听人数 wp端收听人数
+                    收听总次数 大于0s 小于5s web端收听次数 大于0s 小于5s mb端收听次数 大于0s 小于5s iphone收听次数 大于0s 小于5s
+                    ipad收听次数 大于0s 小于5s chezai收听次数 大于0s 小于5s android收听次数 大于0s 小于5s wp端收听次数 大于0s 小于5s
+                    收听总时长 web端收听时长 mb端收听时长 iphone收听时长 ipad收听时长 chezai收听时长 android收听时长 wp端收听时长
+                    声音id 用户id)
+      
+      bold = wb.add_format(:bold => 1)
+
+      worksheet.set_column('A:N', 12)
+      worksheet.set_row(0, 20, bold)
+      worksheet.write('A1', headings)
+      while true
+        break if len == 65001
+        status = client.get_re(cid, is_subapp)
         break if status == []
         status.each_with_index do |f,i|
           worksheet.write(len + i, 0, f)

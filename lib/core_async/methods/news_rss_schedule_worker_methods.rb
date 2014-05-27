@@ -8,7 +8,7 @@ module CoreAsync
       method(action).call(*args)
     end
 
-    def gen_neteasenews
+    def gen_neteasenews_rss
       xml = '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><copyright>Copyright @喜马拉雅 www.ximalaya.com</copyright><language>zh-cn</language><users>'
 
       Settings.neteasenews_uids.each do |uid|
@@ -45,7 +45,7 @@ module CoreAsync
       raise e
     end
 
-    def gen_sohunews
+    def gen_sohunews_rss
       now = Time.new
 
       xml = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -84,7 +84,7 @@ module CoreAsync
       raise e
     end
 
-    def gen_hnxxt
+    def gen_hnxxt_rss
       xml = '<?xml version="1.0" encoding="UTF-8"?>'
       xml << "<rss xmlns:atom=\"http://www.w3.org/2005/Atom\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\" version=\"2.0\"><channel>"
       xml << '<atom:link href="http://rss.ximalaya.com/hnxxt" type="application/rss+xml" rel="self"></atom:link>'
@@ -122,7 +122,7 @@ module CoreAsync
       raise e
     end
 
-    def gen_hnsjt
+    def gen_hnsjt_rss
       now = Time.new
 
       xml = '<?xml version="1.0" encoding="UTF-8"?>'
@@ -657,7 +657,7 @@ module CoreAsync
     def logger
       current_day = Time.now.strftime('%Y-%m-%d')
       if (@@day||=nil) != current_day
-        @@logger = ::Logger.new(Sinarey.root+"/log/sidekiq/news_rss#{current_day}.log")
+        @@logger = ::Logger.new(Sinarey.root+"/log/sidekiq/news_rss_schedule#{current_day}.log")
         @@logger.level = Logger::INFO
         @@day = current_day
       end

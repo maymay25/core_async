@@ -2,16 +2,17 @@
 
 worker_processes 2
 
-app = 'core_async'
+app = 'core_async_web'
 
-# listen "/tmp/#{app}.ting.sock", :backlog => 64
+app_root = File.expand_path('../..',__FILE__)
+
 listen 9090, tcp_nopush: true
 
 timeout 30
 
-working_directory "/srv/#{app}"
+working_directory app_root
 
-pid "/tmp/#{app}.pid"
+pid "#{app_root}/tmp/pids/#{app}.pid"
 
 preload_app true
 GC.respond_to?(:copy_on_write_friendly=) and
