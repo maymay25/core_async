@@ -13,7 +13,9 @@ when 'workers'
   process_sum.times do
     system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb")
     sleep 3
-    system("ps -ef | grep sidekiq")
+    cmd = "ps -ef | grep sidekiq"
+    puts "\n******** #{cmd} ********"
+    system(cmd)
   end
   when 'stop'
     #TODO
@@ -25,7 +27,9 @@ when 'web'
   when 'start'
     system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_web.rb")
     sleep 3
-    system("ps -ef | grep core_async/config/unicorn.rb")
+    cmd = "ps -ef | grep core_async/config/unicorn.rb"
+    puts "\n******** #{cmd} ********"
+    system(cmd)
   when 'stop'
     system("kill `cat #{app_root}/tmp/pids/core_async_web.pid`")
   when 'restart'
@@ -33,18 +37,18 @@ when 'web'
   end
 
 when 'schedule'
-
   case command
   when 'start'
     system("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids --log-dir=#{app_root}/log --log start")
     sleep 3
-    system("ps -ef | grep sidekiq_schedule")
+    cmd = "ps -ef | grep sidekiq_schedule"
+    puts "\n******** #{cmd} ********"
+    system(cmd)
   when 'stop'
     system("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids --log-dir=#{app_root}/log --log stop")
   when 'restart'
     system("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids --log-dir=#{app_root}/log --log restart")
   end
-
 else
   msg = <<-EOF
 
