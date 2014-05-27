@@ -3,14 +3,14 @@ Encoding.default_external='utf-8'
 
 puts 'loading application...'
 
-require File.expand_path('boot', __dir__)
-
 require 'active_record'
 require 'sinarey_support'
 
-#load core
+require File.expand_path('boot', __dir__)
+
+#load core without models, here use gem ting_model.
 require File.join(Sinarey.core_root, 'config/initializers')
-Dir[ File.join(Sinarey.core_root, 'app/models/*.rb') ].each{|file| require file }
+require File.join(Sinarey.core_root, 'app/models/settings.rb')
 
 require File.join(Sinarey.core_root, 'app/helpers/inet.rb')
 require File.join(Sinarey.core_root, 'app/helpers/core_helper.rb')

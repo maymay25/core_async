@@ -17,6 +17,8 @@ gem 'sinatra-contrib'
 
 #gem 'timerizer'
 
+gem 'ting_model','0.1.5'
+
 gem 'settingslogic'
 gem 'oj'
 gem "sanitize"
