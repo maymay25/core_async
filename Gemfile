@@ -35,7 +35,9 @@ gem 'sidekiq', '~> 3.0'
 
 gem 'mysql2'
 
-gem 'passport_thrift_client'
+gem 'passport_thrift_client', '0.1.1'
+
+gem 'profile_thrift_client', '0.0.1'
 
 gem 'yajl-ruby', require: 'yajl'
 
