@@ -40,11 +40,13 @@ RACK_ENV=development ruby deploy.rb [?ARGV]
 ### dev on windows ###
 
 ## sidekiq ###
-bundle exec sidekiq -r ./config/application.rb -C ./sidekiq.yml
+RACK_ENV=development bundle exec sidekiq -r ./config/application.rb -C ./sidekiq.yml
 
 ## monitor ##
-bundle exec thin start -p 9090
+RACK_ENV=development bundle exec thin start -p 9090
 
+##  schedule ##
+RACK_ENV=development bundle exec clockwork ./config/sidekiq_schedule.rb
 
 
 

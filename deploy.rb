@@ -23,18 +23,19 @@ when 'web'
   when 'start'
     system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_web.rb")
   when 'stop'
-    #TODO
+    system("kill `cat #{app_root}/tmp/pids/core_async_web.pid`")
   when 'restart'
-    #TODO
+    system("kill -usr2 `cat #{app_root}/tmp/pids/core_async_web.pid`")
   end
+  system("ps -ef | grep core_async/config/unicorn.rb")
 when 'schedule'
   case command
   when 'start'
-    system("RACK_ENV=#{env} ruby #{app_root}/config/sidekiq_schedule.rb")
+    system("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids start")
   when 'stop'
-    #TODO
+    system("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids stop")
   when 'restart'
-    #TODO
+    system("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids restart")
   end
 
 else

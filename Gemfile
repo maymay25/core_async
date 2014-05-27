@@ -64,3 +64,4 @@ gem 'activerecord', '~> 3.2', require: []
 
 #schedule
 gem 'clockwork'
+gem 'daemons'
