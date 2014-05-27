@@ -59,6 +59,9 @@ module CoreAsync
       
       client.close_scan(cid)
       client.close
+    rescue Exception => e
+      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      raise e
     end
 
     def subapp_user_day_download
@@ -158,6 +161,10 @@ module CoreAsync
           end
         end 
         workbook.close 
+      end
+    rescue Exception => e
+      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      raise e
     end
 
     private

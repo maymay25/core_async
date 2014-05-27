@@ -44,6 +44,7 @@ GEM
       mini_portile (= 0.6.0)
     oj (2.9.3)
     passport_thrift_client (0.1.1)
+    profile_thrift_client (0.0.1)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -93,6 +94,7 @@ GEM
     tzinfo (0.3.39)
     will_paginate (3.0.5)
     wordfilter_client (0.0.2)
+    writeexcel (1.0.4)
     xunch (0.0.11)
       murmurhash (~> 0.0.1)
       redis (~> 3.0.5)
@@ -111,7 +113,8 @@ DEPENDENCIES
   idservice_client
   mysql2
   oj
-  passport_thrift_client
+  passport_thrift_client (= 0.1.1)
+  profile_thrift_client (= 0.0.1)
   rake
   redis (= 3.0.6)
   sanitize
@@ -127,5 +130,6 @@ DEPENDENCIES
   thrift-client
   will_paginate (~> 3.0)
   wordfilter_client (>= 0.0.2)
+  writeexcel
   xunch (>= 0.0.6)
   yajl-ruby

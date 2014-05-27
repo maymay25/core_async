@@ -919,7 +919,7 @@ module CoreAsync
       # num = 0
 
       while true
-        result = loop_get(workbook, 1, client, cid)
+        result = loop_get_track(workbook, 1, client, cid)
         # break if num == 0
         break if result == []
         # num += 1
@@ -929,6 +929,9 @@ module CoreAsync
       
       client.close_scan(cid)
       client.close
+    rescue Exception => e
+      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      raise e
     end
 
     private
