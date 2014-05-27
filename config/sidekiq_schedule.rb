@@ -14,32 +14,32 @@ module Clockwork
     dispatch(job,time)
   end
 
-  #test
-  every(5.seconds, :backup_human_recommends)
+  # debug each job
+  # every(5.seconds, :backup_human_recommends)
 
-  every(5.seconds, :update_baidu_count)
+  # every(5.seconds, :update_baidu_count)
 
-  every(5.seconds, :update_channel_stat)
+  # every(5.seconds, :update_channel_stat)
 
-  every(5.seconds, :check_special_human_recommends)
+  # every(5.seconds, :check_special_human_recommends)
 
-  every(5.seconds, :gen_andchannel_focus)
+  # every(5.seconds, :gen_andchannel_focus)
 
-  every(5.seconds, :login_day_download)
+  # every(5.seconds, :login_day_download)
 
-  every(5.seconds, :track_day_download)
+  # every(5.seconds, :track_day_download)
 
-  every(5.seconds, :gen_hnsjt_rss)
+  # every(5.seconds, :gen_hnsjt_rss)
 
-  every(5.seconds, :gen_hnxxt_rss)
+  # every(5.seconds, :gen_hnxxt_rss)
 
-  every(5.seconds, :gen_sohunews_rss)
+  # every(5.seconds, :gen_sohunews_rss)
 
-  every(5.seconds, :gen_neteasenews_rss)
+  # every(5.seconds, :gen_neteasenews_rss)
 
-  every(5.seconds, :subapp_track_day_download)
+  # every(5.seconds, :subapp_track_day_download)
 
-  every(5.seconds, :subapp_user_day_download)
+  # every(5.seconds, :subapp_user_day_download)
 
 
   #common
