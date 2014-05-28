@@ -70,6 +70,7 @@ when 'sidekiq'
             cache_sum += 1
           else
             system_run("kill `cat #{file}`")
+            FileUtils.rm [file]
           end
         end
       elsif process_sum == pid_sum
