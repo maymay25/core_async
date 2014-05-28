@@ -43,7 +43,6 @@ requires.each do |file|
   require file
 end
 
-
 #load lib
 $LOAD_PATH.unshift(File.expand_path('../../lib',__FILE__))
 require 'core_async/server.rb'

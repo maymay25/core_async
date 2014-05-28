@@ -31,13 +31,11 @@ gem 'hessian2'
 
 gem 'idservice_client'
 
-gem 'will_paginate', '~> 3.0'
-
 gem 'sidekiq', '~> 3.0'
 
 gem 'mysql2'
 
-gem 'passport_thrift_client', '0.1.1'
+#gem 'passport_thrift_client', '0.1.1'
 
 gem 'profile_thrift_client', '0.0.1'
 
@@ -55,15 +53,15 @@ gem 'wordfilter_client', '>=0.0.2'
 
 gem 'xunch', '>=0.0.6'
 
-gem 'hbaserb'
+gem 'hbaserb',require: []
 
-gem 'writeexcel'
+gem 'writeexcel',require: []
 
 #rake tasks
-gem 'rake'
 gem 'activerecord', '~> 3.2', require: []
 
-
 #schedule
-gem 'clockwork'
-gem 'daemons'
+gem 'clockwork',require: []
+gem 'daemons',require: []
+
+gem 'eventmachine',require: []

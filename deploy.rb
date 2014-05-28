@@ -1,6 +1,7 @@
 
 require 'find'
 require 'fileutils'
+require 'daemons'
 
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
@@ -88,6 +89,9 @@ when 'schedule'
     system_run("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids --log-dir=#{app_root}/log --log restart")
   end
   ps_ef_grep('sidekiq_schedule')
+when 'subscribe'
+  ARGV[0] = command
+  Daemons.run("#{app_root}/config/sidkiq_subscribe")
 else
   msg = <<-EOF
 
@@ -104,6 +108,10 @@ else
     3. start schedule tasks
 
        >>  ruby deploy.rb schedule [cmd]
+
+    4. start subscribe tasks
+
+       >>  ruby deploy.rb subscribe [cmd]
 
     tips :
 

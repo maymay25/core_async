@@ -1,11 +1,11 @@
 
-ENV['RACK_ENV']||='production'
+require 'clockwork'
 
 app_root = File.expand_path('../..',__FILE__)
 
-require 'clockwork'
-
-require "#{app_root}/config/application.rb"
+#load lib
+$LOAD_PATH.unshift(File.expand_path("#{app_root}/lib",__FILE__))
+require 'core_async.rb'
 
 
 module Clockwork
