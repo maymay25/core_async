@@ -73,7 +73,7 @@ when 'web'
   when 'start'
     system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_web.rb")
   when 'stop'
-    system_run("sidekiqctl stop #{app_root}/tmp/pids/core_async_web.pid 30")
+    system_run("kill `cat #{app_root}/tmp/pids/core_async_web.pid`")
   when 'restart'
     system_run("kill -usr2 `cat #{app_root}/tmp/pids/core_async_web.pid`")
   end
