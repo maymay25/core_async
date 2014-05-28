@@ -39,7 +39,8 @@ end
 
 case type
 when 'sidekiq'
-  process_sum = (tmp=ARGV[2].to_i)>0 ? tmp : 1
+  init_sum = ARGV[2].to_i
+  process_sum = init_sum>0 ? init_sum : 1
   case command
   when 'stop'
     pid_files = fetch_sidekiq_pid_files(app_root)
@@ -52,18 +53,20 @@ when 'sidekiq'
     end
   when 'start','restart'
     pid_files = fetch_sidekiq_pid_files(app_root)
-    if pid_files.length > 0
+    pid_sum = pid_files.length
+    if pid_sum > 0
       pid_files.each do |file|
         system_run("sidekiqctl stop #{file} 30")
       end
     end
-    process_sum.times do |n|
+    current_process_sum = init_sum>0 ? init_sum : (pid_sum>0 ? pid_sum : 1)
+    current_process_sum.times do |n|
       system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
     end
   when 'clean'
     destroy_sidekiq_pid_files(app_root)
   end
-  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all pid files, use `ruby deploy.rb clean sidekiq`\n ")
+  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb clean sidekiq`\n ")
 when 'web'
   case command
   when 'start'
