@@ -6,9 +6,13 @@ env = ENV['RACK_ENV']||'production'
 
 command, type = ARGV[0], ARGV[1]
 
-def ps_ef_grep(msg)
+def ps_ef_grep(msg,other_msg=nil)
   cmd = "ps -ef | grep #{msg}"
-  puts "\nuse following line to check process\n> #{cmd}"
+  str = "\nsome useful cmd\n> #{cmd}"
+  if other_msg
+    str += "\n#{other_msg}"
+  end
+  puts str
 end
 
 def fetch_sidekiq_pid_files(path)
@@ -65,7 +69,7 @@ when 'sidekiq'
       end
     end
   end
-  ps_ef_grep('sidekiq')
+  ps_ef_grep('sidekiq','> tail log/sidekiq.log -n 200')
 when 'web'
   case command
   when 'start'
