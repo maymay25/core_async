@@ -91,9 +91,9 @@ when 'schedule'
   puts_useful_msg('schedule','sidekiq_schedule')
 when 'subscribe'
   ARGV[0] = command
-  puts "#{ARGV[0]} Daemons.run(\"#{app_root}/config/sidkiq_subscribe.rb\")"
-  Daemons.run("#{app_root}/config/sidkiq_subscribe.rb")
-  puts_useful_msg('subscribe','sidkiq_subscribe')
+  puts "#{ARGV[0]} Daemons.run(\"#{app_root}/config/sidekiq_subscribe.rb\")"
+  Daemons.run("#{app_root}/config/sidekiq_subscribe.rb")
+  puts_useful_msg('subscribe','sidekiq_subscribe')
 else
   msg = <<-EOF
 
