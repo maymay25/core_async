@@ -61,6 +61,9 @@ gem 'writeexcel',require: []
 gem 'activerecord', '~> 3.2', require: []
 
 #schedule
+
+gem 'amqp',require: []
+
 gem 'clockwork',require: []
 gem 'daemons',require: []
 

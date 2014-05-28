@@ -8,7 +8,7 @@ env = ENV['RACK_ENV']||'production'
 
 type, command, set_num = ARGV[0], ARGV[1], ARGV[2].to_i
 
-def ps_ef_grep(type,msg,other_msg=nil)
+def puts_useful_msg(type,msg,other_msg=nil)
   sleep 1
   str = "\ntips for #{type}"
   cmd = "ps -ef | grep #{msg}"
@@ -68,7 +68,7 @@ when 'sidekiq'
   when 'clean'
     destroy_sidekiq_pid_files(app_root)
   end
-  ps_ef_grep('sidekiq','sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb sidekiq clean`")
+  puts_useful_msg('sidekiq','sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb sidekiq clean`")
 when 'web'
   case command
   when 'start'
@@ -78,7 +78,7 @@ when 'web'
   when 'restart'
     system_run("kill -usr2 `cat #{app_root}/tmp/pids/core_async_web.pid`")
   end
-  ps_ef_grep('web','core_async/config/unicorn.rb')
+  puts_useful_msg('web','core_async/config/unicorn.rb')
 when 'schedule'
   case command
   when 'start'
@@ -88,11 +88,15 @@ when 'schedule'
   when 'restart'
     system_run("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids --log-dir=#{app_root}/log --log restart")
   end
-  ps_ef_grep('schedule','sidekiq_schedule')
+  puts_useful_msg('schedule','sidekiq_schedule')
 when 'subscribe'
+  begin
   ARGV[0] = command
   Daemons.run("#{app_root}/config/sidkiq_subscribe")
-  ps_ef_grep('subscribe','sidkiq_subscribe')
+  rescue Exception => e
+    puts "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+  end
+  puts_useful_msg('subscribe','sidkiq_subscribe')
 else
   msg = <<-EOF
 
