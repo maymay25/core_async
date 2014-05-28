@@ -86,7 +86,7 @@ when 'sidekiq'
   when 'clean'
     destroy_sidekiq_pid_files(app_root)
   end
-  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all pid files, use `ruby deploy.rb clean`\n")
+  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all pid files, use `ruby deploy.rb clean`\n ")
 when 'web'
   case command
   when 'start'
