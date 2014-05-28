@@ -16,7 +16,7 @@ def ps_ef_grep(msg,other_msg=nil)
   puts str
 end
 
-def fetch_sidekiq_pid_files
+def fetch_sidekiq_pid_files(app_root)
   path = "#{app_root}/tmp/pids/sidekiq"
   left_str = "sidekiq.pid."
   str_length = left_str.length
@@ -24,7 +24,7 @@ def fetch_sidekiq_pid_files
   pid_files.sort_by{|path| path.split('.')[-1].to_i }
 end
 
-def destroy_sidekiq_pid_files
+def destroy_sidekiq_pid_files(app_root)
   path = "#{app_root}/tmp/pids/sidekiq"
   left_str = "sidekiq.pid."
   str_length = left_str.length
@@ -42,7 +42,7 @@ when 'sidekiq'
   process_sum = (tmp=ARGV[2].to_i)>0 ? tmp : 1
   case command
   when 'stop'
-    pid_files = fetch_sidekiq_pid_files
+    pid_files = fetch_sidekiq_pid_files(app_root)
     if pid_files.length > 0
       pid_files.each do |file|
         system_run("kill `cat #{file}`")
@@ -50,9 +50,9 @@ when 'sidekiq'
     else
       puts "there was no pid files found, maybe already stoped. check it yourself."
     end
-    destroy_sidekiq_pid_files
+    destroy_sidekiq_pid_files(app_root)
   when 'start','restart'
-    pid_files = fetch_sidekiq_pid_files
+    pid_files = fetch_sidekiq_pid_files(app_root)
     pid_sum = pid_files.length
     if pid_sum > 0
       if process_sum > pid_sum
