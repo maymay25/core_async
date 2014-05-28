@@ -7,10 +7,8 @@ env = ENV['RACK_ENV']||'production'
 command, type = ARGV[0], ARGV[1]
 
 def ps_ef_grep(msg)
-  sleep 1
   cmd = "ps -ef | grep #{msg}"
-  puts "\n******** #{cmd} ********"
-  system(cmd)
+  puts "\nuse following line to check process\n> #{cmd}"
 end
 
 def fetch_sidekiq_pid_files(path)
