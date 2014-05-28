@@ -88,7 +88,7 @@ when 'schedule'
   when 'restart'
     system_run("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids --log-dir=#{app_root}/log --log restart")
   end
-  puts_useful_msg('schedule','sidekiq_schedule')
+  puts_useful_msg('schedule','sidekiq_schedule',"> tail log/clockworkd.sidekiq_schedule.output -n 200")
 when 'subscribe'
   ARGV[0] = command
   puts "#{ARGV[0]} Daemons.run(\"#{app_root}/config/sidekiq_subscribe.rb\")"
