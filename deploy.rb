@@ -94,19 +94,21 @@ else
 
     1. start sidekiq workers
 
-       >>  ruby deploy.rb start workers [process_sum]
+       >>  ruby deploy.rb [cmd] sidekiq [process_sum]
 
     2. start sidekiq web monitor
 
-       >>  ruby delopy.rb start web
+       >>  ruby delopy.rb [cmd] web
 
     3. start schedule tasks
 
-       >>  ruby deploy.rb start schedule
+       >>  ruby deploy.rb [cmd] schedule
 
     tips :
 
-      1. default ENVIRONMENT is `production`. change it with RACK_ENV
+      1. cmd is either [ start | stop | restart ]
+
+      2. default ENVIRONMENT is `production`. change it with RACK_ENV
 
          >>  RACK_ENV=development ruby deploy.rb *ARGV
 
