@@ -8,6 +8,7 @@ env = ENV['RACK_ENV']||'production'
 command, type = ARGV[0], ARGV[1]
 
 def ps_ef_grep(msg,other_msg=nil)
+  sleep 1
   cmd = "ps -ef | grep #{msg}"
   str = "\ntips: some useful line\n> #{cmd}"
   if other_msg
