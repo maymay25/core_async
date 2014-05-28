@@ -2,6 +2,8 @@
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
 
+require 'daemons'
+
 puts "Attention!!! : current ENVIRONMENT is #{env} !!!"
 
 sleep 3
