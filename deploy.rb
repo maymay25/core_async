@@ -5,7 +5,7 @@ require 'fileutils'
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
 
-command, type = ARGV[0], ARGV[1]
+type, command = ARGV[0], ARGV[1]
 
 def ps_ef_grep(msg,other_msg=nil)
   sleep 1
@@ -67,7 +67,7 @@ when 'sidekiq'
   when 'clean'
     destroy_sidekiq_pid_files(app_root)
   end
-  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb clean sidekiq`\n ")
+  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb sidekiq clean`\n ")
 when 'web'
   case command
   when 'start'
@@ -95,15 +95,15 @@ else
 
     1. start sidekiq workers
 
-       >>  ruby deploy.rb [cmd] sidekiq [process_sum]
+       >>  ruby deploy.rb sidekiq [cmd] [process_sum]
 
     2. start sidekiq web monitor
 
-       >>  ruby delopy.rb [cmd] web
+       >>  ruby delopy.rb web [cmd]
 
     3. start schedule tasks
 
-       >>  ruby deploy.rb [cmd] schedule
+       >>  ruby deploy.rb schedule [cmd]
 
     tips :
 
