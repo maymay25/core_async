@@ -90,13 +90,9 @@ when 'schedule'
   end
   puts_useful_msg('schedule','sidekiq_schedule')
 when 'subscribe'
-  begin
-    ARGV[0] = command
-    Daemons.run("#{app_root}/config/sidkiq_subscribe.rb")
-    puts_useful_msg('subscribe','sidkiq_subscribe')
-  rescue Exception => e
-    puts "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
-  end
+  ARGV[0] = command
+  Daemons.run("#{app_root}/config/sidkiq_subscribe.rb")
+  puts_useful_msg('subscribe','sidkiq_subscribe')
 else
   msg = <<-EOF
 

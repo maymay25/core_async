@@ -8,6 +8,8 @@ $LOAD_PATH.unshift(File.expand_path("#{app_root}/lib",__FILE__))
 require 'core_async.rb'
 
 
+puts 'deploying sidekiq_schedule ...'
+
 module Clockwork
 
   handler do |job, time|
@@ -104,3 +106,5 @@ module Clockwork
   end
 
 end
+
+puts 'deploying sidekiq_schedule ... DONE'
