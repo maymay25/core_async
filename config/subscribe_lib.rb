@@ -1,6 +1,4 @@
 
-require File.expand_path("../core_async_client.rb",__FILE__)
-
 require 'amqp'
 require 'eventmachine'
 require 'oj'

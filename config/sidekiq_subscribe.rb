@@ -1,4 +1,5 @@
 
+require File.expand_path("../core_async_client.rb",__FILE__)
 
 require File.expand_path("../subscribe_lib.rb",__FILE__)
 

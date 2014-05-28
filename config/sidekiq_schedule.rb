@@ -1,11 +1,7 @@
 
 require 'clockwork'
 
-app_root = File.expand_path('../..',__FILE__)
-
-#load lib
-$LOAD_PATH.unshift(File.expand_path("#{app_root}/lib",__FILE__))
-require 'core_async.rb'
+require File.expand_path("../core_async_client.rb",__FILE__)
 
 puts 'deploying sidekiq_schedule ...'
 
