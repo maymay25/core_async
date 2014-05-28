@@ -15,6 +15,7 @@ def ps_ef_grep(msg,other_msg=nil)
   if other_msg
     str += "\n#{other_msg}"
   end
+  str += "\n  "
   puts str
 end
 
@@ -66,7 +67,7 @@ when 'sidekiq'
   when 'clean'
     destroy_sidekiq_pid_files(app_root)
   end
-  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb sidekiq clean`\n ")
+  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb sidekiq clean`")
 when 'web'
   case command
   when 'start'
