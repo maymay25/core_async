@@ -93,7 +93,7 @@ module Clockwork
       logger.info("#{Time.now} starting : #{job} ... OK")
     end
 
-    @@app_root = app_root
+    @@app_root = File.expand_path('../..',__FILE__)
 
     def logger
       current_day = Time.now.strftime('%Y-%m-%d')
