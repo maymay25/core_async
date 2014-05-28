@@ -1,5 +1,6 @@
 
 require 'find'
+require 'fileutils'
 
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
@@ -15,11 +16,20 @@ def ps_ef_grep(msg,other_msg=nil)
   puts str
 end
 
-def fetch_sidekiq_pid_files(path)
+def fetch_sidekiq_pid_files
+  path = "#{app_root}/tmp/pids/sidekiq"
   left_str = "sidekiq.pid."
   str_length = left_str.length
   pid_files = Find.find(path).to_a.select{|path| file_name=File.basename(path) ; file_name[0,str_length]==left_str }
   pid_files.sort_by{|path| path.split('.')[-1].to_i }
+end
+
+def destroy_sidekiq_pid_files
+  path = "#{app_root}/tmp/pids/sidekiq"
+  left_str = "sidekiq.pid."
+  str_length = left_str.length
+  pid_files = Find.find(path).to_a.select{|path| file_name=File.basename(path) ; file_name[0,str_length]==left_str }
+  FileUtils.rm pid_files
 end
 
 def system_run(cmd)
@@ -32,8 +42,7 @@ when 'sidekiq'
   process_sum = (tmp=ARGV[2].to_i)>0 ? tmp : 1
   case command
   when 'stop'
-    pid_path = "#{app_root}/tmp/pids/sidekiq"
-    pid_files = fetch_sidekiq_pid_files(pid_path)
+    pid_files = fetch_sidekiq_pid_files
     if pid_files.length > 0
       pid_files.each do |file|
         system_run("kill `cat #{file}`")
@@ -41,9 +50,9 @@ when 'sidekiq'
     else
       puts "there was no pid files found, maybe already stoped. check it yourself."
     end
+    destroy_sidekiq_pid_files
   when 'start','restart'
-    pid_path = "#{app_root}/tmp/pids/sidekiq"
-    pid_files = fetch_sidekiq_pid_files(pid_path)
+    pid_files = fetch_sidekiq_pid_files
     pid_sum = pid_files.length
     if pid_sum > 0
       if process_sum > pid_sum
@@ -74,7 +83,7 @@ when 'sidekiq'
       end
     end
   end
-  ps_ef_grep('sidekiq','> tail log/sidekiq.log -n 200')
+  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> if you want remove all pids, use `stop`")
 when 'web'
   case command
   when 'start'
