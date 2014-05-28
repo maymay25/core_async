@@ -1,6 +1,6 @@
 # http://unicorn.bogomips.org/examples/unicorn.conf.rb
 
-worker_processes 2
+worker_processes 1
 
 app = 'core_async_web'
 
