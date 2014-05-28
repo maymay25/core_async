@@ -13,21 +13,37 @@ def system_run(cmd)
   puts cmd
 end
 
+def puts_useful_msg(type,msg,other_msg=nil)
+  sleep 1
+  str = "\ntips for #{type}"
+  cmd = "ps -ef | grep #{msg}"
+  str += "\n> #{cmd}"
+  if other_msg
+    str += "\n#{other_msg}"
+  end
+  str += "\n  "
+  puts str
+end
+
 if ['start','stop','restart'].include?(command)
 
   args = ARGV.to_a.join(' ')
-
-  puts args
 
   system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb sidekiq #{args}")
 
   system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb web #{args}")
 
-  system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb subscribe #{args}")
-
   system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb schedule #{args}")
 
-  sleep 2
+  begin
+    ARGV[0] = command
+    Daemons.run("#{app_root}/config/sidkiq_subscribe")
+    puts_useful_msg('subscribe','sidkiq_subscribe')
+  rescue Exception => e
+    puts "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+  end
+
+  sleep 5
 
   cmd = "ps -ef | grep 'sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidkiq_subscribe'"
   system_run(cmd)
