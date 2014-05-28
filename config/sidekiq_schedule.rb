@@ -1,11 +1,11 @@
 
 require 'clockwork'
 
+app_root = File.expand_path('../..',__FILE__)
+
 #load lib
 $LOAD_PATH.unshift(File.expand_path("#{app_root}/lib",__FILE__))
 require 'core_async.rb'
-
-app_root = File.expand_path('../..',__FILE__)
 
 puts 'deploying sidekiq_schedule ...'
 
@@ -93,7 +93,7 @@ module Clockwork
       logger.info("#{Time.now} starting : #{job} ... OK")
     end
 
-    @@app_root = File.expand_path('../..',__FILE__)
+    @@app_root = app_root
 
     def logger
       current_day = Time.now.strftime('%Y-%m-%d')
