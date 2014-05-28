@@ -1,6 +1,6 @@
 
 require 'find'
-#require 'fileutils'
+require 'fileutils'
 
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
@@ -52,39 +52,18 @@ when 'sidekiq'
     end
   when 'start','restart'
     pid_files = fetch_sidekiq_pid_files(app_root)
-    pid_sum = pid_files.length
-    if pid_sum > 0
-      if process_sum > pid_sum
-        pid_files.each do |file|
-          system_run("kill -usr2 `cat #{file}`")
-        end
-        (pid_sum..(process_sum-1)).each do |n|
-          system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
-        end
-      elsif process_sum < pid_sum
-        cache_sum = 0
-        pid_files.each do |file|
-          if cache_sum < process_sum
-            system_run("kill -usr2 `cat #{file}`")
-            cache_sum += 1
-          else
-            system_run("sidekiqctl stop file 30")
-          end
-        end
-      elsif process_sum == pid_sum
-        pid_files.each do |file|
-          system_run("kill -usr2 `cat #{file}`")
-        end
+    if pid_files.length > 0
+      pid_files.each do |file|
+        system_run("sidekiqctl stop #{file} 30")
       end
-    else
-      process_sum.times do |n|
-        system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
-      end
+    end
+    process_sum.times do |n|
+      system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
     end
   when 'clean'
     destroy_sidekiq_pid_files(app_root)
   end
-  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all pid files, use `ruby deploy.rb clean`\n ")
+  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all pid files, use `ruby deploy.rb clean sidekiq`\n ")
 when 'web'
   case command
   when 'start'
