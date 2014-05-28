@@ -1,12 +1,11 @@
 
 require 'clockwork'
 
-app_root = File.expand_path('../..',__FILE__)
-
 #load lib
 $LOAD_PATH.unshift(File.expand_path("#{app_root}/lib",__FILE__))
 require 'core_async.rb'
 
+app_root = File.expand_path('../..',__FILE__)
 
 puts 'deploying sidekiq_schedule ...'
 
@@ -94,10 +93,13 @@ module Clockwork
       logger.info("#{Time.now} starting : #{job} ... OK")
     end
 
+    @@app_root = app_root
+
     def logger
       current_day = Time.now.strftime('%Y-%m-%d')
       if (@@day||=nil) != current_day
-        @@logger = ::Logger.new(Sinarey.root+"/log/schedule/#{current_day}.log")
+
+        @@logger = ::Logger.new(@@app_root+"/log/schedule/#{current_day}.log")
         @@logger.level = Logger::INFO
         @@day = current_day
       end
