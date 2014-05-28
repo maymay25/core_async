@@ -20,7 +20,7 @@ if ['start','stop','restart'].include?(command)
 
   system("RACK_ENV=#{env} bundle exec ruby #{app_root}/deploy.rb schedule #{args}")
 
-  sleep 5
+  sleep 2
 
   system("ps -ef | grep 'sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidkiq_subscribe'")
 
