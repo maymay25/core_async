@@ -83,8 +83,10 @@ when 'sidekiq'
         system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
       end
     end
+  when 'clean'
+    destroy_sidekiq_pid_files(app_root)
   end
-  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> if you want remove all pids, use `stop`")
+  ps_ef_grep('sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all pid files, use `ruby deploy.rb clean`\n")
 when 'web'
   case command
   when 'start'
