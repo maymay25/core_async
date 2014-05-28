@@ -45,7 +45,7 @@ when 'sidekiq'
     pid_files = fetch_sidekiq_pid_files(app_root)
     if pid_files.length > 0
       pid_files.each do |file|
-        system_run("kill `cat #{file}`")
+        system_run("sidekiqctl stop file 30")
       end
     else
       puts "there was no pid files found, maybe already stoped. check it yourself."
