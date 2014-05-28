@@ -8,25 +8,29 @@ sleep 3
 
 command, set_num = ARGV[0], ARGV[1].to_i
 
+def system_run(cmd)
+  system(cmd)
+  puts cmd
+end
+
 if ['start','stop','restart'].include?(command)
 
   args = ARGV.to_a.join(' ')
 
   puts args
 
-  system("RACK_ENV=#{env} bundle exec ruby #{app_root}/deploy.rb sidekiq #{args}")
+  system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb sidekiq #{args}")
 
-  system("RACK_ENV=#{env} bundle exec ruby #{app_root}/deploy.rb web #{args}")
+  system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb web #{args}")
 
-  system("RACK_ENV=#{env} bundle exec ruby #{app_root}/deploy.rb subscribe #{args}")
+  system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb subscribe #{args}")
 
-  system("RACK_ENV=#{env} bundle exec ruby #{app_root}/deploy.rb schedule #{args}")
+  system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb schedule #{args}")
 
   sleep 2
 
   cmd = "ps -ef | grep 'sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidkiq_subscribe'"
-  puts cmd
-  system(cmd)
+  system_run(cmd)
 
 else
 
