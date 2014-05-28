@@ -11,8 +11,8 @@ sleep 3
 command, set_num = ARGV[0], ARGV[1].to_i
 
 def system_run(cmd)
-  system(cmd)
   puts cmd
+  system(cmd)
 end
 
 def puts_useful_msg(type,msg,other_msg=nil)
@@ -47,7 +47,7 @@ if ['start','stop','restart'].include?(command)
 
   sleep 5
 
-  cmd = "ps -ef | grep 'sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidkiq_subscribe'"
+  cmd = 'ps -ef | grep "sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidkiq_subscribe"'
   system_run(cmd)
 
 else

@@ -37,8 +37,8 @@ def destroy_sidekiq_pid_files(app_root)
 end
 
 def system_run(cmd)
-  system(cmd)
   puts cmd
+  system(cmd)
 end
 
 case type
