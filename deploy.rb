@@ -1,6 +1,6 @@
 
 require 'find'
-require 'fileutils'
+#require 'fileutils'
 
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
@@ -50,7 +50,6 @@ when 'sidekiq'
     else
       puts "there was no pid files found, maybe already stoped. check it yourself."
     end
-    destroy_sidekiq_pid_files(app_root)
   when 'start','restart'
     pid_files = fetch_sidekiq_pid_files(app_root)
     pid_sum = pid_files.length
@@ -70,7 +69,6 @@ when 'sidekiq'
             cache_sum += 1
           else
             system_run("sidekiqctl stop file 30")
-            FileUtils.rm [file]
           end
         end
       elsif process_sum == pid_sum
