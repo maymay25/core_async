@@ -6,7 +6,7 @@ require 'daemons'
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
 
-type, command = ARGV[0], ARGV[1]
+type, command, set_num = ARGV[0], ARGV[1], ARGV[2].to_i
 
 def ps_ef_grep(msg,other_msg=nil)
   sleep 1
@@ -41,8 +41,6 @@ end
 
 case type
 when 'sidekiq'
-  init_sum = ARGV[2].to_i
-  process_sum = init_sum>0 ? init_sum : 1
   case command
   when 'stop'
     pid_files = fetch_sidekiq_pid_files(app_root)
@@ -61,7 +59,7 @@ when 'sidekiq'
         system_run("sidekiqctl stop #{file} 30")
       end
     end
-    current_process_sum = init_sum>0 ? init_sum : (pid_sum>0 ? pid_sum : 1)
+    current_process_sum = set_num>0 ? set_num : (pid_sum>0 ? pid_sum : 1)
     current_process_sum.times do |n|
       system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
     end
