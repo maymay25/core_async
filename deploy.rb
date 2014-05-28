@@ -21,7 +21,7 @@ def fetch_sidekiq_pid_files(path)
 end
 
 case type
-when 'workers'
+when 'sidekiq'
   process_sum = (tmp=ARGV[2].to_i)>0 ? tmp : 1
   case command
   when 'stop'
