@@ -46,7 +46,7 @@ when 'sidekiq'
           system("kill -usr2 `cat #{file}`")
         end
         (pid_sum..(process_sum-1)).each do |n|
-          system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb --pidfile #{pid_path}/sidekiq.pid.#{n}")
+          system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
         end
       elsif process_sum < pid_sum
         cache_sum = 0
@@ -65,7 +65,7 @@ when 'sidekiq'
       end
     else
       process_sum.times do |n|
-        system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb --pidfile #{pid_path}/sidekiq.pid.#{n}")
+        system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb #{n}")
       end
     end
   end
