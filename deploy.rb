@@ -69,7 +69,7 @@ when 'sidekiq'
             system_run("kill -usr2 `cat #{file}`")
             cache_sum += 1
           else
-            system_run("kill `cat #{file}`")
+            system_run("sidekiqctl stop file 30")
             FileUtils.rm [file]
           end
         end
@@ -92,7 +92,7 @@ when 'web'
   when 'start'
     system_run("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_web.rb")
   when 'stop'
-    system_run("kill `cat #{app_root}/tmp/pids/core_async_web.pid`")
+    system_run("sidekiqctl stop #{app_root}/tmp/pids/core_async_web.pid 30")
   when 'restart'
     system_run("kill -usr2 `cat #{app_root}/tmp/pids/core_async_web.pid`")
   end
