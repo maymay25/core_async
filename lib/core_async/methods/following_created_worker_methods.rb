@@ -25,7 +25,7 @@ module CoreAsync
         $counter_client.incr(Settings.counter.user.followers, following_uid, 1)
         
         # 更新对方的相互关注
-        f2 = Following.stn(following_uid).where(uid: following_uid, following_uid: current_uid).first
+        f2 = Following.shard(following_uid).where(uid: following_uid, following_uid: current_uid).first
         f2.update_attribute(:is_mutual, true) if f2
 
         fps = PersonalSetting.where(uid: following_uid).first

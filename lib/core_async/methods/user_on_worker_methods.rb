@@ -7,7 +7,7 @@ module CoreAsync
     end
 
     def user_on(uid)
-      Album.stn(uid).where(uid: uid).each do |album|
+      Album.shard(uid).where(uid: uid).each do |album|
         old_status = album.status
         album.update_attributes(is_publish: true, status: 1)
         $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Yajl::Encoder.encode(album.to_topic_hash.merge(is_feed: true)), content_type: 'text/plain', persistent: true)
@@ -38,12 +38,12 @@ module CoreAsync
 
       # 解封声音
       pass_tracks = []
-      records = TrackRecord.stn(uid).where(uid: uid)
+      records = TrackRecord.shard(uid).where(uid: uid)
       records.each do |r|
         r.update_attributes(is_publish: true, status: 1)
 
         if r.op_type == 1
-          track = Track.stn(r.track_id).where(id: r.track_id, uid: r.uid).first
+          track = Track.shard(r.track_id).where(id: r.track_id, uid: r.uid).first
           if track
             old_status = track.status
             track.update_attributes(is_publish: true, status: 1)
@@ -53,7 +53,7 @@ module CoreAsync
         end
       end
 
-      count = TrackRecord.stn(uid).where(uid: uid, status: 1, is_deleted: false, is_public: true).count
+      count = TrackRecord.shard(uid).where(uid: uid, status: 1, is_deleted: false, is_public: true).count
       $counter_client.set(Settings.counter.user.tracks, uid, count)
       
       if pass_tracks.size > 0

@@ -13,7 +13,7 @@ module CoreAsync
       content = content.to_s.strip
       current_user = $profile_client.queryUserBasicInfo(uid)
       short_content = cut_str(content,60,'..')
-      track = Track.stn(tid).where(id: tid).first
+      track = Track.shard(tid).where(id: tid).first
 
       # 同时生成一条对原声音的评论 （如果有输入内容)
       if content.present?
@@ -39,7 +39,7 @@ module CoreAsync
           cover_path: track.cover_path
         )
 
-        relay_track_record = TrackRecord.stn(uid).where(id: record_id).first
+        relay_track_record = TrackRecord.shard(uid).where(id: record_id).first
         relay_track_record.update_attributes(comment_content:short_content,comment_id:comment.id) if relay_track_record
         
         $counter_client.incr(Settings.counter.track.comments, track.id, 1)
@@ -85,9 +85,9 @@ module CoreAsync
             if ps
               ignored = case ps.allow_at_me_content
               when 2
-                true if !current_user.isVerified and !Following.stn(u.uid).where(uid: u.uid, following_uid: current_user.uid).any? and !Follower.stn(u.uid).where(uid: current_user.uid, following_uid: u.uid).any?
+                true if !current_user.isVerified and !Following.shard(u.uid).where(uid: u.uid, following_uid: current_user.uid).any? and !Follower.shard(u.uid).where(uid: current_user.uid, following_uid: u.uid).any?
               when 3
-                true unless Following.stn(u.uid).where(uid: u.uid, following_uid: current_user.uid).any?
+                true unless Following.shard(u.uid).where(uid: u.uid, following_uid: current_user.uid).any?
               when 4
                 true
               else
@@ -142,9 +142,9 @@ module CoreAsync
       if track_user_ps
         ignored = case track_user_ps.allow_at_me_content
         when 2
-          true if !current_user.isVerified and !Following.stn(track.uid).where(uid: track.uid, following_uid: current_user.uid).any? and !Follower.stn(track.uid).where(uid: current_user.uid, following_uid: track.uid).any?
+          true if !current_user.isVerified and !Following.shard(track.uid).where(uid: track.uid, following_uid: current_user.uid).any? and !Follower.shard(track.uid).where(uid: current_user.uid, following_uid: track.uid).any?
         when 3
-          true unless Following.stn(track.uid).where(uid: track.uid, following_uid: current_user.uid).any?
+          true unless Following.shard(track.uid).where(uid: track.uid, following_uid: current_user.uid).any?
         when 4
           true
         else

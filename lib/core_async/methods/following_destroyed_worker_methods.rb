@@ -11,10 +11,10 @@ module CoreAsync
       old_group_ids = []
       old_group_ids << -1 if is_auto_push
 
-      f2 = Following.stn(following_uid).where(uid: following_uid, following_uid: uid).first
+      f2 = Following.shard(following_uid).where(uid: following_uid, following_uid: uid).first
       f2.update_attribute(:is_mutual, false) if f2
 
-      Followingx2Group.stn(uid).where(uid: uid, following_id: follow_id).each do |f|
+      Followingx2Group.shard(uid).where(uid: uid, following_id: follow_id).each do |f|
         f.destroy
         old_group_ids << f.following_group_id
       end

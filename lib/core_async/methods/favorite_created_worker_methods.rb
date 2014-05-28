@@ -9,15 +9,15 @@ module CoreAsync
     end
 
     def favorite_created(fav_id,uid,upload_source,sharing_to,dotcom)
-      fav = Favorite.stn(uid).where(id: fav_id).first
+      fav = Favorite.shard(uid).where(id: fav_id).first
       return if fav.nil?
       user = $profile_client.queryUserBasicInfo(fav.uid)
 
-      track = Track.stn(fav.track_id).where(id: fav.track_id).first
+      track = Track.shard(fav.track_id).where(id: fav.track_id).first
 
       # 喜欢通知
       return if fav.uid == track.uid
-      fav_note = Inbox.stn(track.uid).where(to_uid: track.uid, message_type: 7, uid: fav.uid, content: track.id.to_s).first
+      fav_note = Inbox.shard(track.uid).where(to_uid: track.uid, message_type: 7, uid: fav.uid, content: track.id.to_s).first
       unless fav_note
         Inbox.create(uid: fav.uid,
           nickname: user.nickname,

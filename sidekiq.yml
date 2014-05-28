@@ -1,5 +1,5 @@
 ---
-:concurrency: 25
+:concurrency: 25 # activerecord shard dont thread_safe
 :logfile: ./log/sidekiq.log
 :queues:
   - default

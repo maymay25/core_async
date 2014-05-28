@@ -15,9 +15,9 @@ module CoreAsync
 
       uids ||= []
       uids.each do |uid|
-        TrackRecord.stn(uid).where(uid: uid, op_type: 1).each do |record|
+        TrackRecord.shard(uid).where(uid: uid, op_type: 1).each do |record|
           record.update_attributes(attrs)
-          track = Track.stn(record.track_id).where(id: record.track_id).first
+          track = Track.shard(record.track_id).where(id: record.track_id).first
           if track
             track.update_attributes(attrs)
             $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash), content_type: 'text/plain', persistent: true)
@@ -37,7 +37,7 @@ module CoreAsync
           end
         end
 
-        Album.stn(uid).where(uid: uid).each do |album|
+        Album.shard(uid).where(uid: uid).each do |album|
           album.update_attributes(attrs)
           $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Yajl::Encoder.encode(album.to_topic_hash), content_type: 'text/plain', persistent: true)
           # album origin

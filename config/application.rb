@@ -8,9 +8,28 @@ require 'sinarey_support'
 
 require File.expand_path('boot', __dir__)
 
-#load core without models, here use gem ting_model.
+#load core without models, here use gem ting_model 0.1.8.
 require File.join(Sinarey.core_root, 'config/initializers')
+
+#some model missed in ting_model 0.1.8.
 require File.join(Sinarey.core_root, 'app/models/settings.rb')
+require File.join(Sinarey.core_root, 'app/models/hbase_client.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_album_backup.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_album_special.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_track_backup.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_track_special.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_user_backup.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_user_special.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_tag_album_backup.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_tag_album_special.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_tag_track_backup.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_tag_track_special.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_tag_album_backup.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_tag_album_special.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_tag_track_backup.rb')
+require File.join(Sinarey.core_root, 'app/models/human_recommend_category_tag_track_special.rb')
+require File.join(Sinarey.core_root, 'app/models/channel_focus.rb')
+
 
 require File.join(Sinarey.core_root, 'app/helpers/inet.rb')
 require File.join(Sinarey.core_root, 'app/helpers/core_helper.rb')

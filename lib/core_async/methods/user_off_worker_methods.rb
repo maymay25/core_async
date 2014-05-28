@@ -13,7 +13,7 @@ module CoreAsync
       HumanRecommendTagUser.where(uid: uid).each{|r| r.destroy}
 
       if del_albums_tracks
-        Album.stn(uid).where(uid: uid).each do |album|
+        Album.shard(uid).where(uid: uid).each do |album|
           old_status = album.status
           album.update_attributes(is_publish: false, status: 2, dig_status: 2)
           $rabbitmq_channel.fanout(Settings.topic.album.destroyed, durable: true).publish(Yajl::Encoder.encode(album.to_topic_hash.merge(is_feed: true)), content_type: 'text/plain', persistent: true)
@@ -50,7 +50,7 @@ module CoreAsync
 
         # 下架声音
         destroyed_tracks = []
-        records = TrackRecord.stn(uid).where(uid: uid)
+        records = TrackRecord.shard(uid).where(uid: uid)
 
         ActiveRecord::Base.transaction do
           records.each do |r|
@@ -58,7 +58,7 @@ module CoreAsync
             r.update_attributes(is_publish: false, status: 2, dig_status: 2)
 
             if r.op_type == 1
-              track = Track.stn(r.track_id).where(id: r.track_id, uid: r.uid).first
+              track = Track.shard(r.track_id).where(id: r.track_id, uid: r.uid).first
               if track
                 old_status = track.status
                 track.update_attributes(is_publish: false, status: 2, dig_status: 2)
@@ -110,7 +110,7 @@ module CoreAsync
       if del_comments
         comments_origin = CommentOrigin.where(uid: uid)
         comments_origin.each do |origin|
-          comment = Comment.stn(origin.track_id).where(id: origin.id).first
+          comment = Comment.shard(origin.track_id).where(id: origin.id).first
           if comment
             if comment.destroy
 

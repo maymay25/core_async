@@ -8,7 +8,7 @@ module CoreAsync
 
     def album_resend(album_ids,uid)
       album_ids.each do |album_id|
-        ts = TrackSet.stn(album_id).where(id: album_id).first
+        ts = TrackSet.shard(album_id).where(id: album_id).first
         next if ts.nil?
         album_copy = Album.create(uid: uid,
           nickname: ts.nickname,
@@ -45,7 +45,7 @@ module CoreAsync
 
         new_record_ids = []
 
-        TrackRecord.stn(ts.uid).where(uid: ts.uid, album_id: ts.id).each do |record|
+        TrackRecord.shard(ts.uid).where(uid: ts.uid, album_id: ts.id).each do |record|
           record_copy = TrackRecord.create(op_type: 2,
             track_id: record.track_id,
             track_uid: record.track_uid,

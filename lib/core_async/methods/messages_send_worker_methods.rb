@@ -23,10 +23,10 @@ module CoreAsync
         offset = 0
         loop do
           loop_size = 1000
-          followers = Follower.stn(zhubo.uid).where(following_uid: zhubo.uid).offset(offset).limit(loop_size)
+          followers = Follower.shard(zhubo.uid).where(following_uid: zhubo.uid).offset(offset).limit(loop_size)
           break if followers.blank?
           followers.each do |follower|
-            linkman = Linkman.stn(follower.uid).where(uid: follower.uid, linkman_uid: zhubo.uid).first
+            linkman = Linkman.shard(follower.uid).where(uid: follower.uid, linkman_uid: zhubo.uid).first
             if linkman
               linkman.no_read_count = linkman.no_read_count + 1
               linkman.last_chat_at = method_time
@@ -62,7 +62,7 @@ module CoreAsync
         to_uids.each do |to_uid|
           to_user = PROFILE_SERVICE.queryUserBasicInfo(to_uid)
 
-          linkman = Linkman.stn(to_user.uid).where(uid: to_user.uid, linkman_uid: zhubo.uid).first
+          linkman = Linkman.shard(to_user.uid).where(uid: to_user.uid, linkman_uid: zhubo.uid).first
           if linkman
             linkman.no_read_count = linkman.no_read_count + 1
             linkman.last_chat_at = method_time
@@ -119,7 +119,7 @@ module CoreAsync
           vusers = VUser.where(true).offset(offset).limit(1000)
           break if vusers.count == 0
           vusers.each do |vuser|
-            linkman = Linkman.stn(vuser.uid).where(uid: vuser.uid, linkman_uid: zhubo.uid).first
+            linkman = Linkman.shard(vuser.uid).where(uid: vuser.uid, linkman_uid: zhubo.uid).first
             if linkman
               linkman.no_read_count = linkman.no_read_count + 1
               linkman.last_chat_at = method_time

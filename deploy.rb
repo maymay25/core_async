@@ -1,4 +1,5 @@
 
+require 'find'
 
 app_root = File.expand_path('..',__FILE__)
 env = ENV['RACK_ENV']||'production'
@@ -6,24 +7,65 @@ env = ENV['RACK_ENV']||'production'
 command, type = ARGV[0], ARGV[1]
 
 def ps_ef_grep(msg)
-  sleep 3
+  sleep 1
   cmd = "ps -ef | grep #{msg}"
   puts "\n******** #{cmd} ********"
   system(cmd)
+end
+
+def fetch_sidekiq_pid_files(path)
+  left_str = "sidekiq.pid."
+  str_length = left_str.length
+  pid_files = Find.find(path).to_a.select{|path| file_name=File.basename(path) ; file_name[0,str_length]==left_str }
+  pid_files.sort_by{|path| path.split('.')[-1].to_i }
 end
 
 case type
 when 'workers'
   process_sum = (tmp=ARGV[2].to_i)>0 ? tmp : 1
   case command
-  when 'start'
-    process_sum.times do
-      system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb")
-    end
   when 'stop'
-    #TODO
-  when 'restart'
-    #TODO
+    pid_path = "#{app_root}/tmp/pids/sidekiq"
+    pid_files = fetch_sidekiq_pid_files(pid_path)
+    if pid_files.length > 0
+      pid_files.each do |file|
+        system("kill `cat #{file}`")
+      end
+    else
+      puts "there was no pid files found, maybe already stoped. check it yourself."
+    end
+  when 'start','restart'
+    pid_path = "#{app_root}/tmp/pids/sidekiq"
+    pid_files = fetch_sidekiq_pid_files(pid_path)
+    pid_sum = pid_files.length
+    if pid_sum > 0
+      if process_sum > pid_sum
+        pid_files.each do |file|
+          system("kill -usr2 `cat #{file}`")
+        end
+        (pid_sum..(process_sum-1)).each do |n|
+          system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb -P #{pid_path}/sidekiq.pid.#{n}")
+        end
+      elsif process_sum < pid_sum
+        cache_sum = 0
+        pid_files.each do |file|
+          if cache_sum < process_sum
+            system("kill -usr2 `cat #{file}`")
+            cache_sum += 1
+          else
+            system("kill `cat #{file}`")
+          end
+        end
+      elsif process_sum == pid_sum
+        pid_files.each do |file|
+          system("kill -usr2 `cat #{file}`")
+        end
+      end
+    else
+      process_sum.times do |n|
+        system("RACK_ENV=#{env} bundle exec ruby #{app_root}/config/sidekiq_workers.rb -P #{pid_path}/sidekiq.pid.#{n}")
+      end
+    end
   end
   ps_ef_grep('sidekiq')
 when 'web'

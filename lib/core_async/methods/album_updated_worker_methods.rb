@@ -10,8 +10,8 @@ module CoreAsync
 
     def album_updated(album_id,is_new,user_agent,created_records_ids,updated_track_ids,moved_record_id_old_album_ids,destroyed_track_ids,no_feed_track_ids,share_opts,share_type)
 
-      trackset = TrackSet.stn(album_id).where(id: album_id).first
-      album = Album.stn(trackset.uid).where(id: trackset.id).first
+      trackset = TrackSet.shard(album_id).where(id: album_id).first
+      album = Album.shard(trackset.uid).where(id: trackset.id).first
 
       created_record_ids = created_record_ids || []
       passed_new_public_record_ids = []
@@ -19,7 +19,7 @@ module CoreAsync
       no_feed_track_ids = no_feed_track_ids || []
 
       if created_record_ids.size > 0
-        created_records = TrackRecord.stn(album.uid).where(uid: album.uid, album_id: album.id, id: created_record_ids).order('id')
+        created_records = TrackRecord.shard(album.uid).where(uid: album.uid, album_id: album.id, id: created_record_ids).order('id')
         created_records.each do |record|
 
           if record.status == 1 && record.is_public && !record.is_deleted 
@@ -36,7 +36,7 @@ module CoreAsync
           end
 
           if record.op_type == 1
-            track = Track.stn(record.track_id).where(id: record.track_id).first
+            track = Track.shard(record.track_id).where(id: record.track_id).first
             if track.is_public
               if track.status == 1 && !track.is_deleted
                 # 全站声音数+
@@ -172,7 +172,7 @@ module CoreAsync
         end
       end
 
-      last_tr ||= TrackRecord.stn(album.uid).where(uid:album.uid,album_id:album.id,status:1,is_public:1,is_deleted:0).last
+      last_tr ||= TrackRecord.shard(album.uid).where(uid:album.uid,album_id:album.id,status:1,is_public:1,is_deleted:0).last
 
       if last_tr
         #logger.info("#{Time.now} last_tr.track_id #{last_tr.track_id} album.last_uptrack_id #{album.last_uptrack_id}")
@@ -214,7 +214,7 @@ module CoreAsync
       # 删除的声音
       if destroyed_track_ids
         destroyed_track_ids.each do |id|
-          track = Track.stn(id).where(id: id, uid: album.uid).first
+          track = Track.shard(id).where(id: id, uid: album.uid).first
           next unless track
 
           if track.is_public && track.status == 1
@@ -243,7 +243,7 @@ module CoreAsync
       # 被更新过的原有的声音
       if updated_track_ids
         updated_track_ids.each do |id|
-          track = Track.stn(id).where(id: id, uid: album.uid).first
+          track = Track.shard(id).where(id: id, uid: album.uid).first
           if track
             $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Oj.dump(track.to_topic_hash, mode: :compat), content_type: 'text/plain', persistent: true)
             logger.info "#{Time.now} #{album.uid} #{Settings.topic.track.updated} #{track.id}"
@@ -255,8 +255,8 @@ module CoreAsync
       if moved_record_id_old_album_ids
         moved_record_id_old_album_ids.each do |record_id, old_album_id|
           logger.info "move record #{record_id} from album #{old_album_id ? old_album_id : 'nil'}"
-          record = TrackRecord.stn(album.uid).where(uid: album.uid, id: record_id).first
-          if record && track = Track.stn(record.track_id).where(id: record.track_id).first
+          record = TrackRecord.shard(album.uid).where(uid: album.uid, id: record_id).first
+          if record && track = Track.shard(record.track_id).where(id: record.track_id).first
             plays = $counter_client.get(Settings.counter.track.plays, track.id)
 
             # 专辑声音数+
@@ -272,10 +272,10 @@ module CoreAsync
 
             # 老专辑
             if old_album_id
-              old = Album.stn(album.uid).where(id: old_album_id, uid: album.uid).first
+              old = Album.shard(album.uid).where(id: old_album_id, uid: album.uid).first
               if old
                 old.tracks_order = old.tracks_order.split(',').delete_if{ |id| id == record.id }.join(",") if old.tracks_order
-                last = TrackRecord.stn(old.uid).where(uid: old.uid, album_id: old.id, is_deleted: false, status: 1, is_public: true).order('created_at desc').first
+                last = TrackRecord.shard(old.uid).where(uid: old.uid, album_id: old.id, is_deleted: false, status: 1, is_public: true).order('created_at desc').first
                 if last
                   if last.track_id != old.last_uptrack_id
                     old.last_uptrack_at = last.created_at
@@ -326,7 +326,7 @@ module CoreAsync
               $counter_client.incr(Settings.counter.tag.albums, tag, 1)
 
               # 常用标签
-              user_tag = UserTag.stn(album.uid).where(tag: tag).first
+              user_tag = UserTag.shard(album.uid).where(tag: tag).first
               if user_tag
                 user_tag.update_attribute(:num, user_tag.num + 1)
               else
@@ -373,19 +373,19 @@ module CoreAsync
       album_origin.update_attributes(hash)
       
       user_tracks_count = $counter_client.get(Settings.counter.user.tracks, trackset.uid)
-      db_user_tracks_count = TrackRecord.stn(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
+      db_user_tracks_count = TrackRecord.shard(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
       if user_tracks_count != db_user_tracks_count
         $counter_client.set(Settings.counter.user.tracks, trackset.uid, db_user_tracks_count)
       end
 
       album_tracks_count = $counter_client.get(Settings.counter.album.tracks, trackset.id)
-      db_album_tracks_count = TrackRecord.stn(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_deleted: false, is_public: true, status: 1).count
+      db_album_tracks_count = TrackRecord.shard(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_deleted: false, is_public: true, status: 1).count
       if album_tracks_count != db_album_tracks_count
         $counter_client.set(Settings.counter.album.tracks, trackset.id, db_album_tracks_count)
       end
 
       user_albums_count = $counter_client.get(Settings.counter.user.albums, trackset.uid)
-      db_user_albums_count = Album.stn(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
+      db_user_albums_count = Album.shard(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
       if user_albums_count != db_user_albums_count
         $counter_client.set(Settings.counter.user.albums, trackset.uid, db_user_albums_count)
       end

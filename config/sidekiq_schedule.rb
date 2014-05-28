@@ -19,15 +19,15 @@ module Clockwork
 
   every(5.seconds, :update_baidu_count)
 
-  #every(5.seconds, :update_channel_stat)
+  #every(5.seconds, :update_channel_stat)  # NameError: uninitialized constant Apache::Hadoop::Hbase::Thrift::TScan
 
   every(5.seconds, :check_special_human_recommends)
 
   every(5.seconds, :gen_andchannel_focus)
 
-  #every(5.seconds, :login_day_download)
+  #every(5.seconds, :login_day_download)  # NameError: uninitialized constant Apache::Hadoop::Hbase::Thrift::TScan
 
-  #every(5.seconds, :track_day_download)
+  #every(5.seconds, :track_day_download)  # NameError: uninitialized constant Apache::Hadoop::Hbase::Thrift::TScan
 
   every(5.seconds, :gen_hnsjt_rss)
 
@@ -37,9 +37,11 @@ module Clockwork
 
   every(5.seconds, :gen_neteasenews_rss)
 
-  #every(5.seconds, :subapp_track_day_download)
+  #every(5.seconds, :subapp_track_day_download)  # NameError: uninitialized constant Apache::Hadoop::Hbase::Thrift::TScan
 
-  every(5.seconds, :subapp_user_day_download)
+  #every(5.seconds, :subapp_user_day_download)  #  undefined method `scanner_subapp_user' 
+
+
 
 
   #common

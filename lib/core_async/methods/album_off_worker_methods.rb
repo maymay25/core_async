@@ -9,7 +9,7 @@ module CoreAsync
     # off_type 1: 连同声音删除 2: 不删声音 3: 连同声音下架
     def album_off(album_id,is_off,off_type)
 
-      trackset = TrackSet.stn(album_id).where(id: album_id).first
+      trackset = TrackSet.shard(album_id).where(id: album_id).first
 
       if trackset
         #$counter_client.decr(Settings.counter.user.albums, trackset.uid, 1) if is_off  # 和计数同步机制冲突
@@ -25,12 +25,12 @@ module CoreAsync
 
           if off_type == 1
             # 删除声音
-            records = TrackRecord.stn(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_deleted: false)
+            records = TrackRecord.shard(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_deleted: false)
             records.each do |r|
               r.update_attribute(:is_deleted, true)
 
               if r.op_type == 1
-                track = Track.stn(r.track_id).where(id: r.track_id, uid: trackset.uid, is_deleted: false).first
+                track = Track.shard(r.track_id).where(id: r.track_id, uid: trackset.uid, is_deleted: false).first
                 if track
                   old_is_deleted = track.is_deleted
                   track.update_attribute(:is_deleted, true)
@@ -58,12 +58,12 @@ module CoreAsync
             end
           elsif params['op_type'] == 3
             # 下架声音
-            records = TrackRecord.stn(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_publish: true)
+            records = TrackRecord.shard(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_publish: true)
             records.each do |r|
               r.update_attributes(is_publish: false, status: 2)
 
               if r.op_type == 1
-                track = Track.stn(r.track_id).where(id: r.track_id, uid: trackset.uid, is_publish: true).first
+                track = Track.shard(r.track_id).where(id: r.track_id, uid: trackset.uid, is_publish: true).first
                 if track
                   old_status = track.status
                   track.update_attributes(is_publish: false, status: 2)
@@ -99,12 +99,12 @@ module CoreAsync
         elsif off_type == 2
           # 声音移出专辑
           updated_tracks = []
-          records = TrackRecord.stn(trackset.uid).where(uid: trackset.uid, album_id: trackset.id)
+          records = TrackRecord.shard(trackset.uid).where(uid: trackset.uid, album_id: trackset.id)
           records.each do |r|
             r.update_attributes(album_id: nil, album_title: nil, album_cover_path: nil)
 
             if r.op_type == 1
-              track = Track.stn(r.track_id).where(id: r.track_id).first
+              track = Track.shard(r.track_id).where(id: r.track_id).first
               if track
                 track.update_attributes(album_id: nil, album_title: nil, album_cover_path: nil)
                 updated_tracks << track
@@ -137,19 +137,19 @@ module CoreAsync
       end
 
       user_tracks_count = $counter_client.get(Settings.counter.user.tracks, trackset.uid)
-      db_user_tracks_count = TrackRecord.stn(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
+      db_user_tracks_count = TrackRecord.shard(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
       if user_tracks_count != db_user_tracks_count
         $counter_client.set(Settings.counter.user.tracks, trackset.uid, db_user_tracks_count)
       end
 
       album_tracks_count = $counter_client.get(Settings.counter.album.tracks, trackset.id)
-      db_album_tracks_count = TrackRecord.stn(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_deleted: false, is_public: true, status: 1).count
+      db_album_tracks_count = TrackRecord.shard(trackset.uid).where(uid: trackset.uid, album_id: trackset.id, is_deleted: false, is_public: true, status: 1).count
       if album_tracks_count != db_album_tracks_count
         $counter_client.set(Settings.counter.album.tracks, trackset.id, db_album_tracks_count)
       end
 
       user_albums_count = $counter_client.get(Settings.counter.user.albums, trackset.uid)
-      db_user_albums_count = Album.stn(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
+      db_user_albums_count = Album.shard(trackset.uid).where(uid: trackset.uid, is_deleted: false, is_public: true, status: 1).count
       if user_albums_count != db_user_albums_count
         $counter_client.set(Settings.counter.user.albums, trackset.uid, db_user_albums_count)
       end

@@ -11,12 +11,12 @@ module CoreAsync
     def update_track_pic_category(uid,album_id,update_pic,cover_path,update_category,category_id)
 
       if update_pic and update_category
-        track_records = TrackRecord.stn(uid).where(uid: uid, album_id: album_id)
+        track_records = TrackRecord.shard(uid).where(uid: uid, album_id: album_id)
         track_records.each do |t|
           t.cover_path = cover_path 
           t.category_id = category_id
           t.save
-          track = Track.stn(t.track_id).where(id: t.track_id).first
+          track = Track.shard(t.track_id).where(id: t.track_id).first
           track.cover_path = cover_path
           track.category_id = category_id
           track.save
@@ -24,22 +24,22 @@ module CoreAsync
           $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash.merge(cover_path: cover_path)), content_type: 'text/plain', persistent: true)
         end    
       elsif update_pic 
-        track_records = TrackRecord.stn(uid).where(uid: uid, album_id: album_id)
+        track_records = TrackRecord.shard(uid).where(uid: uid, album_id: album_id)
         track_records.each do |t|
           t.cover_path = cover_path
           t.save
-          track = Track.stn(t.track_id).where(id: t.track_id).first
+          track = Track.shard(t.track_id).where(id: t.track_id).first
           track.cover_path = cover_path
           track.save
 
           $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash.merge(cover_path: cover_path)), content_type: 'text/plain', persistent: true)
         end
       elsif update_category
-        track_records = TrackRecord.stn(uid).where(uid: uid, album_id: album_id)
+        track_records = TrackRecord.shard(uid).where(uid: uid, album_id: album_id)
         track_records.each do |t|
           t.category_id = category_id
           t.save
-          track = Track.stn(t.track_id).where(id: t.track_id).first
+          track = Track.shard(t.track_id).where(id: t.track_id).first
           track.category_id = category_id
           track.save
 

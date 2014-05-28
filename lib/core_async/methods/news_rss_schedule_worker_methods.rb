@@ -19,7 +19,7 @@ module CoreAsync
         xml << "\n<headurl>#{picture_url('user', user.logoPic, 'origin')}</headurl>"
         xml << "\n<link>http://www.ximalaya.com/#{uid}</link>"
         xml << "\n<tracks>"
-        TrackRecord.stn(uid).where(uid: uid, is_deleted: false, is_public: true, status: 1).order('created_at desc').limit(10).each do |record|
+        TrackRecord.shard(uid).where(uid: uid, is_deleted: false, is_public: true, status: 1).order('created_at desc').limit(10).each do |record|
           url = file_url(record.play_path_64)
           albumurl = "http://www.ximalaya.com/#{record.track_uid}/album/#{record.album_id}" if record.album_id
           xml << "\n<track>"
@@ -58,7 +58,7 @@ module CoreAsync
       xml << "<description>喜马拉雅 听我想听</description>"
 
       Settings.neteasenews_uids.each do |uid|
-        TrackRecord.stn(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1 and created_at > ?', uid, now - 604800).order('created_at desc').limit(10).each do |record|
+        TrackRecord.shard(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1 and created_at > ?', uid, now - 604800).order('created_at desc').limit(10).each do |record|
           url = file_url(record.play_path_64)
           jt_path = "/jt.mp3?channel=sohunews&amp;album_id=#{record.album_id}&amp;track_id=#{record.track_id}&amp;uid=#{record.uid}&amp;jt=#{url}"
           xml << "\n<item>"
@@ -96,7 +96,7 @@ module CoreAsync
 
       # 糗事百科，段子来了
       [ 1000596, 2629294 ].each do |uid|
-        TrackRecord.stn(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1', uid).order('created_at desc').each do |record|
+        TrackRecord.shard(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1', uid).order('created_at desc').each do |record|
           url = file_url(record.play_path_64)
           jt_path = "/jt.mp3?channel=hnxxt&amp;album_id=#{record.album_id}&amp;track_id=#{record.track_id}&amp;uid=#{record.uid}&amp;jt=#{url}"
           xml << "\n<item>"
@@ -626,7 +626,7 @@ module CoreAsync
 
           [ 225840, 1873479 ] 
       ].each do |album_id, uid|
-        TrackRecord.stn(uid).where('uid = ? and album_id = ? and created_at > ? and is_deleted = 0', uid, album_id, now - 2592000).order('created_at desc').each do |record|
+        TrackRecord.shard(uid).where('uid = ? and album_id = ? and created_at > ? and is_deleted = 0', uid, album_id, now - 2592000).order('created_at desc').each do |record|
           url = file_url(record.play_path_64)
           jt_path = "/jt.mp3?channel=hnsjt&amp;album_id=#{record.album_id}&amp;track_id=#{record.track_id}&amp;uid=#{record.uid}&amp;jt=#{url}"
           xml << "\n<item>"

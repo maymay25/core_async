@@ -3,10 +3,6 @@ core_async
 
 ### production deploy  ###
 
-# start all service #
-
-ruby deploy.rb start all
-
 
 # web #
 
@@ -34,7 +30,6 @@ ruby deploy.rb start workers 2
 ### test service ###
 
 RACK_ENV=development ruby deploy.rb [?ARGV]
-
 
 
 ### dev on windows ###

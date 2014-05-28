@@ -9,7 +9,7 @@ module CoreAsync
     end
 
     def track_on(track_id,is_new,share_opts,at_users)
-      track = Track.stn(track_id).where(id: track_id).first
+      track = Track.shard(track_id).where(id: track_id).first
       user = $profile_client.queryUserBasicInfo(track.uid)
 
       common_works(track,user)
@@ -22,14 +22,14 @@ module CoreAsync
       end
       
       user_tracks_count = $counter_client.get(Settings.counter.user.tracks, track.uid)
-      db_user_tracks_count = TrackRecord.stn(track.uid).where(uid: track.uid, is_deleted: false, is_public: true, status: 1).count
+      db_user_tracks_count = TrackRecord.shard(track.uid).where(uid: track.uid, is_deleted: false, is_public: true, status: 1).count
       if user_tracks_count != db_user_tracks_count
         $counter_client.set(Settings.counter.user.tracks, track.uid, db_user_tracks_count)
       end
 
       if track.album_id
         album_tracks_count = $counter_client.get(Settings.counter.album.tracks, track.album_id)
-        db_album_tracks_count = TrackRecord.stn(track.uid).where(uid: track.uid, album_id: track.album_id, is_deleted: false, is_public: true, status: 1).count
+        db_album_tracks_count = TrackRecord.shard(track.uid).where(uid: track.uid, album_id: track.album_id, is_deleted: false, is_public: true, status: 1).count
         if album_tracks_count != db_album_tracks_count
           $counter_client.set(Settings.counter.album.tracks, track.album_id, db_album_tracks_count)
         end
@@ -55,7 +55,7 @@ module CoreAsync
           if track.album_id
             #$counter_client.incr(Settings.counter.album.tracks, track.album_id, 1)
 
-            album = Album.stn(track.uid).where(id: track.album_id).first
+            album = Album.shard(track.uid).where(id: track.album_id).first
             if track.id != album.last_uptrack_id
               album.update_attributes(last_uptrack_id: track.id, last_uptrack_at: track.created_at, last_uptrack_title: track.title, last_uptrack_cover_path: track.cover_path)
               $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Yajl::Encoder.encode(album.to_topic_hash.merge(has_new_track: true)), content_type: 'text/plain', persistent: true)
@@ -67,7 +67,7 @@ module CoreAsync
               next if tag.empty?
               $counter_client.incr(Settings.counter.tag.tracks, tag, 1)
               # 常用标签
-              user_tag = UserTag.stn(track.uid).where(tag: tag).first
+              user_tag = UserTag.shard(track.uid).where(tag: tag).first
               if user_tag
                 user_tag.update_attribute(:num, user_tag.num + 1)
               else
@@ -186,9 +186,9 @@ module CoreAsync
               if ps
                 ignored = case ps.allow_at_me_content
                 when 2
-                  true if !user.isVerified and !Following.stn(u.uid).where(uid: u.uid, following_uid: user.uid).any? and !Follower.stn(u.uid).where(uid: user.uid, following_uid: u.uid).any?
+                  true if !user.isVerified and !Following.shard(u.uid).where(uid: u.uid, following_uid: user.uid).any? and !Follower.shard(u.uid).where(uid: user.uid, following_uid: u.uid).any?
                 when 3
-                  true unless Following.stn(u.uid).where(uid: u.uid, following_uid: user.uid).any?
+                  true unless Following.shard(u.uid).where(uid: u.uid, following_uid: user.uid).any?
                 when 4
                   true
                 else

@@ -8,7 +8,7 @@ module CoreAsync
 
     def track_off(track_id,is_off)
 
-      track = Track.stn(track_id).where(id: track_id).first
+      track = Track.shard(track_id).where(id: track_id).first
 
       if track
         if is_off
@@ -42,14 +42,14 @@ module CoreAsync
         track_origin.update_attributes(hash)
 
         user_tracks_count = $counter_client.get(Settings.counter.user.tracks, track.uid)
-        db_user_tracks_count = TrackRecord.stn(track.uid).where(uid: track.uid, is_deleted: false, is_public: true, status: 1).count
+        db_user_tracks_count = TrackRecord.shard(track.uid).where(uid: track.uid, is_deleted: false, is_public: true, status: 1).count
         if user_tracks_count != db_user_tracks_count
           $counter_client.set(Settings.counter.user.tracks, track.uid, db_user_tracks_count)
         end
 
         if track.album_id
           album_tracks_count = $counter_client.get(Settings.counter.album.tracks, track.album_id)
-          db_album_tracks_count = TrackRecord.stn(track.uid).where(uid: track.uid, album_id: track.album_id, is_deleted: false, is_public: true, status: 1).count
+          db_album_tracks_count = TrackRecord.shard(track.uid).where(uid: track.uid, album_id: track.album_id, is_deleted: false, is_public: true, status: 1).count
           if album_tracks_count != db_album_tracks_count
             $counter_client.set(Settings.counter.album.tracks, track.album_id, db_album_tracks_count)
           end

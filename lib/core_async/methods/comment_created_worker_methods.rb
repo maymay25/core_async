@@ -9,15 +9,15 @@ module CoreAsync
     end
 
     def comment_created(comment_id,track_id,pid,mid,sharing_to,dotcom)
-      comment = Comment.stn(track_id).where(id: comment_id).first
+      comment = Comment.shard(track_id).where(id: comment_id).first
       comment_user = $profile_client.queryUserBasicInfo(comment.uid)
-      track = Track.stn(comment.track_id).where(id: comment.track_id).first
+      track = Track.shard(comment.track_id).where(id: comment.track_id).first
       
       quan_ignores = [comment_user.nickname]
 
       if pid.to_s!=""
         # 回复评论
-        pcomment = Comment.stn(comment.track_id).where(id: pid).first
+        pcomment = Comment.shard(comment.track_id).where(id: pid).first
         pcomment_user = $profile_client.queryUserBasicInfo(pcomment.uid)
         # 父评论作者收件箱 评论我的
         Inbox.create(uid: comment.uid,
@@ -95,9 +95,9 @@ module CoreAsync
           if ps
             ignored = case ps.allow_at_me_content
             when 2
-              true if !comment_user.isVerified and !Following.stn(u.uid).where(uid: u.uid, following_uid: comment_user.uid).any? and !Follower.stn(u.uid).where(uid: comment_user.uid, following_uid: u.uid).any?
+              true if !comment_user.isVerified and !Following.shard(u.uid).where(uid: u.uid, following_uid: comment_user.uid).any? and !Follower.shard(u.uid).where(uid: comment_user.uid, following_uid: u.uid).any?
             when 3
-              true unless Following.stn(u.uid).where(uid: u.uid, following_uid: comment_user.uid).any?
+              true unless Following.shard(u.uid).where(uid: u.uid, following_uid: comment_user.uid).any?
             when 4
               true
             else

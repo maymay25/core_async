@@ -10,7 +10,7 @@ module CoreAsync
 
     def message_created(uid,chat_id)
 
-      chat = Chat.stn(uid).where(id: chat_id).first
+      chat = Chat.shard(uid).where(id: chat_id).first
 
       return if BlackUser.where(uid: chat.with_uid, black_uid: uid).any?
 
