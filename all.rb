@@ -10,7 +10,9 @@ command, set_num = ARGV[0], ARGV[1].to_i
 
 if ['start','stop','restart'].include?(command)
 
-  args = ARGV.join(' ')
+  args = ARGV.to_a.join(' ')
+
+  puts args
 
   system("RACK_ENV=#{env} bundle exec ruby #{app_root}/deploy.rb sidekiq #{args}")
 
