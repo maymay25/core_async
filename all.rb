@@ -22,7 +22,9 @@ if ['start','stop','restart'].include?(command)
 
   sleep 2
 
-  system("ps -ef | grep 'sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidkiq_subscribe'")
+  cmd = "ps -ef | grep 'sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidkiq_subscribe'"
+  puts cmd
+  system(cmd)
 
 else
 
