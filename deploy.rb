@@ -68,7 +68,7 @@ when 'sidekiq'
   when 'clean'
     destroy_sidekiq_pid_files(app_root)
   end
-  puts_useful_msg('sidekiq','sidekiq',"> tail log/sidekiq.log -n 200 \n> remove all sidekiq pid files, use `ruby deploy.rb sidekiq clean`")
+  puts_useful_msg('sidekiq','sidekiq',"> tail log/sidekiq.log -n 50 \n> remove all sidekiq pid files, use `ruby deploy.rb sidekiq clean`")
 when 'web'
   case command
   when 'start'
@@ -88,7 +88,7 @@ when 'schedule'
   when 'restart'
     system_run("RACK_ENV=#{env} bundle exec clockworkd -c #{app_root}/config/sidekiq_schedule.rb --pid-dir=#{app_root}/tmp/pids --log-dir=#{app_root}/log --log restart")
   end
-  puts_useful_msg('schedule','sidekiq_schedule',"> tail log/clockworkd.sidekiq_schedule.output -n 200")
+  puts_useful_msg('schedule','sidekiq_schedule',"> tail log/clockworkd.sidekiq_schedule.output -n 50")
 when 'subscribe'
   ARGV[0] = command
   puts "#{ARGV[0]} Daemons.run(\"#{app_root}/config/sidekiq_subscribe.rb\")"
