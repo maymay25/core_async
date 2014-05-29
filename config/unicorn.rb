@@ -43,10 +43,4 @@ after_fork do |server, worker|
   defined?(REDIS) and
     REDIS.client.reconnect
 
-  new_bunny!
-  new_thrift_clients!
-
-  establish_connection!
-  new_xunch!
-
 end
