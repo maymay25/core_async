@@ -78,7 +78,7 @@ when 'web'
   when 'restart'
     system_run("kill -usr2 `cat #{app_root}/tmp/pids/core_async_web.pid`")
   end
-  puts_useful_msg('web','core_async/config/unicorn.rb')
+  puts_useful_msg('web','core_async/config/unicorn.rb', "> tail log/unicorn.core_async_web.log -n 50 ")
 when 'schedule'
   case command
   when 'start'
@@ -94,7 +94,7 @@ when 'subscribe'
   puts "using Daemons..."
   Daemons.run("#{app_root}/config/sidekiq_subscribe.rb")
   puts "#{ARGV[0]} Daemons.run(\"#{app_root}/config/sidekiq_subscribe.rb\")"
-  puts_useful_msg('subscribe','sidekiq_subscribe')
+  puts_useful_msg('subscribe','sidekiq_subscribe',"> tail log/subscribe/#{Time.now.strftime('%Y-%m-%d')}.log -n 50 ")
 else
   msg = <<-EOF
 
