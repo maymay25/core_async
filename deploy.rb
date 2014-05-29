@@ -91,8 +91,9 @@ when 'schedule'
   puts_useful_msg('schedule','sidekiq_schedule',"> tail log/clockworkd.sidekiq_schedule.output -n 50")
 when 'subscribe'
   ARGV[0] = command
-  puts "#{ARGV[0]} Daemons.run(\"#{app_root}/config/sidekiq_subscribe.rb\")"
+  puts "using Daemons..."
   Daemons.run("#{app_root}/config/sidekiq_subscribe.rb")
+  puts "#{ARGV[0]} Daemons.run(\"#{app_root}/config/sidekiq_subscribe.rb\")"
   puts_useful_msg('subscribe','sidekiq_subscribe')
 else
   msg = <<-EOF
