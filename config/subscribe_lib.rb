@@ -36,10 +36,10 @@ def subscribe_track_played(channel)
 
       CoreAsync::TrackPlayedWorker.perform_async(:incr_album_plays,current_uid)
 
-      logger.info "#{Time.now} #{track_id} #{current_uid}"
+      logger.info "#{Time.now} subscribe_track_played #{track_id} #{current_uid}"
 
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{Time.now} subscribe_track_played #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
     end
   end
   puts "#{Time.new} subscribe_following_created started"
@@ -54,9 +54,9 @@ def subscribe_following_created(channel)
       follow_list = params.collect{|h| {uid:h['uid'], nickname:h['nickname'], following_uid:h['following_uid']} }
       CoreAsync::FollowingCreatedWorker.perform_async(:following_created,follow_list)
       
-      logger.info "#{Time.now} #{follow_list.length}"
+      logger.info "#{Time.now} subscribe_following_created #{follow_list.length}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{Time.now} subscribe_following_created #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
     end
   end
   puts "#{Time.new} subscribe_following_created started"
@@ -70,9 +70,9 @@ def subscribe_album_off(channel)
       album_id, is_off, op_type = params['id'], params['op_type'], params['is_off']
       CoreAsync::AlbumOffWorker.perform_async(:album_off, album_id, is_off, op_type)
       
-      logger.info "#{Time.now} #{album_id} #{is_off} #{op_type}"
+      logger.info "#{Time.now} subscribe_album_off #{album_id} #{is_off} #{op_type}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{Time.now} subscribe_album_off #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
     end
   end
   puts "#{Time.new} subscribe_album_off started"
@@ -87,9 +87,9 @@ def subscribe_track_off(channel)
 
       CoreAsync::TrackOffWorker.perform_async(:track_off,track_id,is_off)
       
-      logger.info "#{Time.now} #{track_id} #{is_off}"
+      logger.info "#{Time.now} subscribe_track_off #{track_id} #{is_off}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{Time.now} subscribe_track_off #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
     end
   end
   puts "#{Time.new} subscribe_track_off started"
