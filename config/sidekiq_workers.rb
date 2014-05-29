@@ -12,6 +12,6 @@ puts 'deploying sidekiq_workers ...'
 
 n = ARGV[0].to_i
 
-system_run("RACK_ENV=#{env} cd #{app_root} && bundle exec sidekiq -r #{app_root}/config/application.rb -C #{app_root}/sidekiq.yml -P #{app_root}/tmp/pids/sidekiq/sidekiq.pid.#{n} -d")
+system_run("RACK_ENV=#{env} cd #{app_root} && bundle exec sidekiq -r #{app_root}/config/core_async_server.rb -C #{app_root}/sidekiq.yml -P #{app_root}/tmp/pids/sidekiq/sidekiq.pid.#{n} -d")
 
 puts 'deploying sidekiq_workers DONE'

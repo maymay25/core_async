@@ -53,8 +53,6 @@ gem 'wordfilter_client', '>=0.0.2'
 
 gem 'xunch', '>=0.0.6'
 
-gem 'hbaserb',require: []
-
 gem 'writeexcel',require: []
 
 #rake tasks

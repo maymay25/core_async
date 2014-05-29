@@ -1,6 +1,8 @@
 
 app_root = File.expand_path('../..',__FILE__)
 
+puts 'loading core_async_client...'
+
 #load core settings
 require 'settingslogic'
 if ENV['RACK_ENV']=='production'

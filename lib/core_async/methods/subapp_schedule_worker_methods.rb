@@ -1,4 +1,4 @@
-require 'hbaserb'
+require 'core_async_hbase'
 require 'writeexcel'
 
 module CoreAsync

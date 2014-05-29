@@ -19,6 +19,9 @@ EventMachine.run do
     subscribe_album_off(channel)
 
     subscribe_track_off(channel)
+
+    
+    
   end
 end
 

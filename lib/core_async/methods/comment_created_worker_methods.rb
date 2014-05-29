@@ -8,7 +8,7 @@ module CoreAsync
       method(action).call(*args)
     end
 
-    def comment_created(comment_id,track_id,pid,mid,sharing_to,dotcom)
+    def comment_created(comment_id,track_id,pid,mid,ip,sharing_to,dotcom)
       comment = Comment.shard(track_id).where(id: comment_id).first
       comment_user = $profile_client.queryUserBasicInfo(comment.uid)
       track = Track.shard(comment.track_id).where(id: comment.track_id).first
