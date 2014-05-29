@@ -27,7 +27,17 @@ if ['start','stop','restart'].include?(command)
 
   system_run("RACK_ENV=#{env} ruby #{app_root}/deploy.rb subscribe #{args}")
 
-  sleep 5
+  sleep 1
+
+  tips = "WARNING: `web` and `schedule` should manual check their logs to ensure if they are running well."
+  tips += "\n> web: tail log/unicorn.core_async_web.log -n 200 -f "
+  tips += "\n> schedule: tail log/clockworkd.sidekiq_schedule.output -n 200 -f "
+  tips += "\n> sidekiq: tail log/sidekiq.log -n 200 -f "
+  tips += "\n> subscribe: tail log/subscribe/#{Time.now.strftime('%Y-%m-%d')}.log -n 200 -f "
+  tips += "\n "
+  puts tips
+
+  sleep 4
 
   cmd = 'ps -ef | grep "sidekiq\|core_async/config/unicorn.rb\|sidekiq_schedule\|sidekiq_subscribe"'
   system_run(cmd)

@@ -23,7 +23,7 @@ module CoreAsync
         end
 
         arr.insert(0, [ now, track_id ])
-        REDIS.set("listened#{uid}", Oj.dump(arr))
+        REDIS.set("listened#{uid}", oj_dump(arr))
       end
     rescue Exception => e
       logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"

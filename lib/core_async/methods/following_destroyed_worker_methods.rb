@@ -19,7 +19,7 @@ module CoreAsync
         old_group_ids << f.following_group_id
       end
 
-      $rabbitmq_channel.fanout(Settings.topic.follow.destroyed, durable: true).publish(Yajl::Encoder.encode({
+      $rabbitmq_channel.fanout(Settings.topic.follow.destroyed, durable: true).publish(oj_dump({
         id: follow_id,
         uid: uid,
         following_uid: following_uid,
@@ -30,7 +30,7 @@ module CoreAsync
         created_at: Time.now
       }), content_type: 'text/plain', persistent: true)
 
-      $rabbitmq_channel.fanout(Settings.topic.followgroup.changed, durable: true).publish(Yajl::Encoder.encode({
+      $rabbitmq_channel.fanout(Settings.topic.followgroup.changed, durable: true).publish(oj_dump({
         uid: uid,
         following_uid: following_uid,
         current_following_groups: [],

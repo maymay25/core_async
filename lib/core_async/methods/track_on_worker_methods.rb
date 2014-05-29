@@ -58,7 +58,7 @@ module CoreAsync
             album = Album.shard(track.uid).where(id: track.album_id).first
             if track.id != album.last_uptrack_id
               album.update_attributes(last_uptrack_id: track.id, last_uptrack_at: track.created_at, last_uptrack_title: track.title, last_uptrack_cover_path: track.cover_path)
-              $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Yajl::Encoder.encode(album.to_topic_hash.merge(has_new_track: true)), content_type: 'text/plain', persistent: true)
+              $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(album.to_topic_hash.merge(has_new_track: true)), content_type: 'text/plain', persistent: true)
             end
           end
 
@@ -164,7 +164,7 @@ module CoreAsync
             end
           end
           message = {syncType: 'track', cleintType:'web', uid: track.uid.to_s, thirdpartyNames: sharing_to, title: track.title, summary: track.intro, comment: share_content, url: "#{Settings.home_root}/#{track.uid}/sound/#{track.id}", images: file_url(track.cover_path)}
-          $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(Yajl::Encoder.encode(message), content_type: 'text/plain')
+          $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(oj_dump(message), content_type: 'text/plain')
         end
     end
 

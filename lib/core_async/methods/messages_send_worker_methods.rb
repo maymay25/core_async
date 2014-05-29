@@ -98,7 +98,7 @@ module CoreAsync
 
             $counter_client.incr(Settings.counter.user.new_message, to_user.uid, 1) if is_notice
           
-            $rabbitmq_channel.queue('pns-standard-server.unicastmessage.queue', durable: true).publish(Yajl::Encoder.encode({
+            $rabbitmq_channel.queue('pns-standard-server.unicastmessage.queue', durable: true).publish(oj_dump({
               type: 5, 
               to_uid: to_user.uid,
               id: chat.id,

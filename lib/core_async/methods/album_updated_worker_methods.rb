@@ -8,7 +8,7 @@ module CoreAsync
       method(action).call(*args)
     end
 
-    def album_updated(album_id,is_new,user_agent,created_records_ids,updated_track_ids,moved_record_id_old_album_ids,destroyed_track_ids,no_feed_track_ids,share_opts,share_type)
+    def album_updated(album_id,is_new,user_agent,ip,created_records_ids,updated_track_ids,moved_record_id_old_album_ids,destroyed_track_ids,no_feed_track_ids,share_opts,share_type)
 
       trackset = TrackSet.shard(album_id).where(id: album_id).first
       album = Album.shard(trackset.uid).where(id: trackset.id).first
@@ -116,7 +116,7 @@ module CoreAsync
       if created_tracks.size > 0
         created_tracks.each do |track|
           TrackOnWorker.perform_async(:track_on, track.id, true, nil, nil)
-          $rabbitmq_channel.fanout(Settings.topic.track.created, durable: true).publish(Oj.dump(track.to_topic_hash.merge(user_agent: user_agent, is_feed: !no_feed_track_ids.include?(track.id)), mode: :compat), content_type: 'text/plain', persistent: true) if track.play_path_64
+          $rabbitmq_channel.fanout(Settings.topic.track.created, durable: true).publish(oj_dump(track.to_topic_hash.merge(user_agent: user_agent, ip: ip, is_feed: !no_feed_track_ids.include?(track.id))), content_type: 'text/plain', persistent: true) if track.play_path_64
           logger.info "#{Time.now} #{album.uid} #{Settings.topic.track.created} #{track.id} #{track.play_path_64}"
         
           if track.tags
@@ -167,7 +167,7 @@ module CoreAsync
           end
 
           message = { syncType: 'album', cleintType:'web', uid: album.uid.to_s, thirdpartyNames: sharing_to, title: album.title, summary: '', comment: share_content, url: "#{Settings.home_root}/#{album.uid}/album/#{album.id}", images: file_url(album.cover_path) }
-          $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(Oj.dump(message, mode: :compat), content_type: 'text/plain')
+          $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(oj_dump(message), content_type: 'text/plain')
           #logger.info(params['share'].inspect)
         end
       end
@@ -229,7 +229,7 @@ module CoreAsync
             $counter_client.decr(Settings.counter.album.plays, track.album_id, plays) if plays > 0
 
             TrackOffWorker.perform_async(:track_off,track.id,true)
-            $rabbitmq_channel.fanout(Settings.topic.track.destroyed, durable: true).publish(Oj.dump(track.to_topic_hash.merge(updated_at: Time.now, is_feed: true), mode: :compat), content_type: 'text/plain', persistent: true)
+            $rabbitmq_channel.fanout(Settings.topic.track.destroyed, durable: true).publish(oj_dump(track.to_topic_hash.merge(updated_at: Time.now, is_feed: true, ip: ip)), content_type: 'text/plain', persistent: true)
             logger.info "#{Time.now} #{album.uid} topic.track.destroyed #{track.id}"
 
             HumanRecommendCategoryTrack.where(track_id: track.id).each{|r| r.destroy }
@@ -245,7 +245,7 @@ module CoreAsync
         updated_track_ids.each do |id|
           track = Track.shard(id).where(id: id, uid: album.uid).first
           if track
-            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Oj.dump(track.to_topic_hash, mode: :compat), content_type: 'text/plain', persistent: true)
+            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash.merge(ip: ip)), content_type: 'text/plain', persistent: true)
             logger.info "#{Time.now} #{album.uid} #{Settings.topic.track.updated} #{track.id}"
           end
         end
@@ -268,7 +268,7 @@ module CoreAsync
               #logger.info "#{Time.now} #{album.title} #{Settings.counter.album.plays} + #{plays}"
             end
 
-            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Oj.dump(track.to_topic_hash, mode: :compat), content_type: 'text/plain', persistent: true)
+            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash.merge(ip: ip)), content_type: 'text/plain', persistent: true)
 
             # 老专辑
             if old_album_id
@@ -292,7 +292,7 @@ module CoreAsync
 
                 old.save
 
-                $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Oj.dump(old.to_topic_hash, mode: :compat), content_type: 'text/plain', persistent: true)
+                $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(old.to_topic_hash.merge(ip: ip)), content_type: 'text/plain', persistent: true)
                 logger.info "#{Time.now} #{album.uid} #{Settings.topic.album.updated} old #{old.id}"
 
                 # 老专辑声音数-
@@ -316,7 +316,7 @@ module CoreAsync
           # 用户的专辑数+ 
           #$counter_client.incr(Settings.counter.user.albums, album.uid, 1)
 
-          $rabbitmq_channel.fanout(Settings.topic.album.created, durable: true).publish(Oj.dump(album.to_topic_hash.merge(user_agent: user_agent, is_feed: true), mode: :compat), content_type: 'text/plain', persistent: true)
+          $rabbitmq_channel.fanout(Settings.topic.album.created, durable: true).publish(oj_dump(album.to_topic_hash.merge(user_agent: user_agent, ip: ip, is_feed: true)), content_type: 'text/plain', persistent: true)
           logger.info "#{Time.now} #{album.uid} #{Settings.topic.album.created} #{album.id}"
 
           if album.tags
@@ -354,7 +354,7 @@ module CoreAsync
           )
         end
       else # 更新专辑
-        $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Oj.dump(album.to_topic_hash.merge(has_new_track: passed_new_public_record_ids.size > 0), mode: :compat), content_type: 'text/plain', persistent: true)
+        $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(album.to_topic_hash.merge(ip: ip, has_new_track: passed_new_public_record_ids.size > 0)), content_type: 'text/plain', persistent: true)
         logger.info "#{Time.now} #{album.uid} #{Settings.topic.album.updated} #{album.id}"
       end
 

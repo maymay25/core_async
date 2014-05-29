@@ -16,7 +16,7 @@ module CoreAsync
         Album.shard(uid).where(uid: uid).each do |album|
           old_status = album.status
           album.update_attributes(is_publish: false, status: 2, dig_status: 2)
-          $rabbitmq_channel.fanout(Settings.topic.album.destroyed, durable: true).publish(Yajl::Encoder.encode(album.to_topic_hash.merge(is_feed: true)), content_type: 'text/plain', persistent: true)
+          $rabbitmq_channel.fanout(Settings.topic.album.destroyed, durable: true).publish(oj_dump(album.to_topic_hash.merge(is_feed: true)), content_type: 'text/plain', persistent: true)
 
           if old_status != 2
             #$counter_client.decr(Settings.counter.user.albums, album.uid, 1)
@@ -63,7 +63,7 @@ module CoreAsync
                 old_status = track.status
                 track.update_attributes(is_publish: false, status: 2, dig_status: 2)
                 TrackOffWorker.perform_async(:track_off,track.id,false)
-                $rabbitmq_channel.fanout(Settings.topic.track.destroyed, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash.merge(updated_at: Time.now, is_feed: true)), content_type: 'text/plain', persistent: true)
+                $rabbitmq_channel.fanout(Settings.topic.track.destroyed, durable: true).publish(oj_dump(track.to_topic_hash.merge(updated_at: Time.now, is_feed: true)), content_type: 'text/plain', persistent: true)
                 destroyed_tracks << track if old_status != 2
               end
             end
@@ -117,7 +117,7 @@ module CoreAsync
               #$counter_client.decr(Settings.counter.track.comments, origin.track_id, 1)
               origin.destroy
 
-              $rabbitmq_channel.fanout(Settings.topic.comment.destroyed, durable: true).publish(Yajl::Encoder.encode({
+              $rabbitmq_channel.fanout(Settings.topic.comment.destroyed, durable: true).publish(oj_dump({
                 id: comment.id,
                 uid: comment.uid,
                 track_id: comment.track_id,

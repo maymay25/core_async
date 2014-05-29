@@ -8,7 +8,7 @@ module CoreAsync
       method(action).call(*args)
     end
 
-    def favorite_created(fav_id,uid,upload_source,sharing_to,dotcom)
+    def favorite_created(fav_id,uid,upload_source,ip,sharing_to,dotcom)
       fav = Favorite.shard(uid).where(id: fav_id).first
       return if fav.nil?
       user = $profile_client.queryUserBasicInfo(fav.uid)
@@ -44,7 +44,7 @@ module CoreAsync
 
       # 喜欢加分享
       message = {syncType: 'favorite', cleintType:'web', uid: uid.to_s, thirdpartyNames:sharing_to, title: track.title, summary: track.intro, comment: "《#{track.title}》很喜欢！都来听听吧", url: "#{dotcom}/#{track.uid}/sound/#{track.id}", images: file_url(track.cover_path)}
-      $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(Yajl::Encoder.encode(message), content_type: 'text/plain')
+      $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(oj_dump(message), content_type: 'text/plain')
       # 更新用户最新收藏声音
       lf = LatestFavorite.where(uid: fav.uid).first
       hash = {

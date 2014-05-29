@@ -1,3 +1,8 @@
+
+def oj_dump(json)
+  Oj.dump(json, mode: :compat)
+end
+
 require 'core_async/methods/album_off_worker_methods.rb'
 require 'core_async/methods/album_resend_worker_methods.rb'
 require 'core_async/methods/album_updated_worker_methods.rb'

@@ -20,7 +20,7 @@ module CoreAsync
           track = Track.shard(record.track_id).where(id: record.track_id).first
           if track
             track.update_attributes(attrs)
-            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash), content_type: 'text/plain', persistent: true)
+            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash), content_type: 'text/plain', persistent: true)
             # track origin
             trackhash = track.attributes
             trackhash.delete('id')
@@ -39,7 +39,7 @@ module CoreAsync
 
         Album.shard(uid).where(uid: uid).each do |album|
           album.update_attributes(attrs)
-          $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Yajl::Encoder.encode(album.to_topic_hash), content_type: 'text/plain', persistent: true)
+          $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(album.to_topic_hash), content_type: 'text/plain', persistent: true)
           # album origin
           albumhash = album.attributes
           albumhash.delete('id')

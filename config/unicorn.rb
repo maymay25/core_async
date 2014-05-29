@@ -14,8 +14,8 @@ working_directory app_root
 
 pid "#{app_root}/tmp/pids/#{app}.pid"
 
-stderr_path "#{@dir}log/unicorn.stderr.log"
-stdout_path "#{@dir}log/unicorn.stdout.log"
+stderr_path "#{@dir}log/unicorn.#{app}.log"
+stdout_path "#{@dir}log/unicorn.#{app}.log"
 
 preload_app true
 GC.respond_to?(:copy_on_write_friendly=) and

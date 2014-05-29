@@ -166,7 +166,7 @@ module CoreAsync
       if sharing_to
         comment_content = comment.content.gsub('@',' ') if !comment.content.nil?
         message = {syncType: 'comment', cleintType:'web', uid: comment.uid.to_s, thirdpartyNames:sharing_to, title: track.title, summary: track.intro, comment: "“#{cut_str(comment.content, 100, '...')}” 我正在听《#{track.title}》", url: "#{dotcom}/#{track.uid}/sound/#{track.id}", images: file_url(track.cover_path)}
-        $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(Yajl::Encoder.encode(message), content_type: 'text/plain')
+        $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(oj_dump(message), content_type: 'text/plain')
       end
 
       hash = comment.attributes

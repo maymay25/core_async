@@ -823,7 +823,7 @@ module CoreAsync
       end
 
       chan_x_image.each do |channel, image|
-        REDIS.set("andchannel_focus#{channel}", Oj.dump(image, mode: :compat))
+        REDIS.set("andchannel_focus#{channel}", oj_dump(image))
       end
     rescue Exception => e
       logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"

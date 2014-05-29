@@ -93,7 +93,7 @@ module CoreAsync
          
           destroyed_tracks.each do |track|
             TrackOffWorker.perform_async(:track_off,track.id,true)
-            $rabbitmq_channel.fanout(Settings.topic.track.destroyed, durable: true).publish(Oj.dump(track.to_topic_hash.merge(is_feed: true, is_off: true), mode: :compat), content_type: 'text/plain', persistent: true)
+            $rabbitmq_channel.fanout(Settings.topic.track.destroyed, durable: true).publish(oj_dump(track.to_topic_hash.merge(is_feed: true, is_off: true)), content_type: 'text/plain', persistent: true)
           end
          
         elsif off_type == 2
@@ -113,7 +113,7 @@ module CoreAsync
           end
 
           updated_tracks.each do |track|
-            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Oj.dump(track.to_topic_hash, mode: :compat), content_type: 'text/plain', persistent: true)
+            $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash), content_type: 'text/plain', persistent: true)
           end
         end
 

@@ -21,7 +21,7 @@ module CoreAsync
           track.category_id = category_id
           track.save
 
-          $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash.merge(cover_path: cover_path)), content_type: 'text/plain', persistent: true)
+          $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash.merge(cover_path: cover_path)), content_type: 'text/plain', persistent: true)
         end    
       elsif update_pic 
         track_records = TrackRecord.shard(uid).where(uid: uid, album_id: album_id)
@@ -32,7 +32,7 @@ module CoreAsync
           track.cover_path = cover_path
           track.save
 
-          $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash.merge(cover_path: cover_path)), content_type: 'text/plain', persistent: true)
+          $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash.merge(cover_path: cover_path)), content_type: 'text/plain', persistent: true)
         end
       elsif update_category
         track_records = TrackRecord.shard(uid).where(uid: uid, album_id: album_id)
@@ -43,7 +43,7 @@ module CoreAsync
           track.category_id = category_id
           track.save
 
-          $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(Yajl::Encoder.encode(track.to_topic_hash), content_type: 'text/plain', persistent: true)
+          $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash), content_type: 'text/plain', persistent: true)
         end
       end
       logger.info "#{Time.now} update_track_pic_category uid:#{uid}, update album_id:#{album_id}, uppic:#{update_pic}, upcat:#{update_category}"
