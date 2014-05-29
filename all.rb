@@ -29,13 +29,15 @@ if ['start','stop','restart'].include?(command)
 
   sleep 1
 
-  tips = "WARNING: `web` and `schedule` should manual check their logs to ensure if they are running well."
-  tips += "\n> web: tail log/unicorn.core_async_web.log -n 200 -f "
-  tips += "\n> schedule: tail log/clockworkd.sidekiq_schedule.output -n 200 -f "
-  tips += "\n> sidekiq: tail log/sidekiq.log -n 200 -f "
-  tips += "\n> subscribe: tail log/subscribe/#{Time.now.strftime('%Y-%m-%d')}.log -n 200 -f "
-  tips += "\n "
-  puts tips
+  if command!='stop'
+    tips = "WARNING: `web` and `schedule` should manual check their logs to ensure if they are running well."
+    tips += "\n> web: tail log/unicorn.core_async_web.log -n 200 -f "
+    tips += "\n> schedule: tail log/clockworkd.sidekiq_schedule.output -n 200 -f "
+    tips += "\n> sidekiq: tail log/sidekiq.log -n 200 -f "
+    tips += "\n> subscribe: tail log/subscribe/#{Time.now.strftime('%Y-%m-%d')}.log -n 200 -f "
+    tips += "\n "
+    puts tips
+  end
 
   sleep 4
 
