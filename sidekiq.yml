@@ -11,6 +11,7 @@
   - album_updated
   - album_resend
   - comment_created
+  - comment_destroyed
   - favorite_created
   - following_created
   - following_destroyed
@@ -23,3 +24,5 @@
   - common_schedule
   - news_rss_schedule
   - subapp_schedule
+  - subapp
+  - audio_queue

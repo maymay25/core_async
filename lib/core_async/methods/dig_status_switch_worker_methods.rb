@@ -56,9 +56,9 @@ module CoreAsync
         end
       end
 
-      logger.info "#{Time.now} #{uids.inspect} #{dig_status} #{is_v} #{is_crawler}"
+      logger.info "#{uids.inspect} #{dig_status} #{is_v} #{is_crawler}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

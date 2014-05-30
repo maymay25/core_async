@@ -46,25 +46,26 @@ module CoreAsync
           $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash), content_type: 'text/plain', persistent: true)
         end
       end
-      logger.info "#{Time.now} update_track_pic_category uid:#{uid}, update album_id:#{album_id}, uppic:#{update_pic}, upcat:#{update_category}"
+      logger.info "update_track_pic_category uid:#{uid}, update album_id:#{album_id}, uppic:#{update_pic}, upcat:#{update_category}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "update_track_pic_category #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
-    def user_audit(uid,nickname,logoPic,personDescribe,create_time)
+    def user_audit(uid,nickname,logoPic,intro,create_time,is_update)
       ApprovingUser.create(
         user_id: uid,
         approve_group_id: nil,
         nickname: nickname,
         cover_path: logoPic,
-        intro: personDescribe,
-        user_created_at: create_time
+        intro: intro,
+        user_created_at: create_time,
+        is_update: is_update||0
       )
       
-      logger.info "#{Time.now} #{user_audit} #{uid} #{nickname} #{create_time}"
+      logger.info "user_audit #{uid} #{nickname} #{create_time} #{is_update&&'update'}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "user_audit #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

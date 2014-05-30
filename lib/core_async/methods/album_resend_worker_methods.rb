@@ -113,9 +113,9 @@ module CoreAsync
         album_copy.tracks_order = new_record_ids.join(',')
         album_copy.save
       end # album_ids.each do |album_id|
-      logger.info "#{Time.now} resend #{album_ids.inspect} to #{uid}"
+      logger.info "resend #{album_ids.inspect} to #{uid}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

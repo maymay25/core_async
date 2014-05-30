@@ -117,7 +117,7 @@ module CoreAsync
         created_tracks.each do |track|
           TrackOnWorker.perform_async(:track_on, track.id, true, nil, nil)
           $rabbitmq_channel.fanout(Settings.topic.track.created, durable: true).publish(oj_dump(track.to_topic_hash.merge(user_agent: user_agent, ip: ip, is_feed: !no_feed_track_ids.include?(track.id))), content_type: 'text/plain', persistent: true) if track.play_path_64
-          logger.info "#{Time.now} #{album.uid} #{Settings.topic.track.created} #{track.id} #{track.play_path_64}"
+          logger.info "#{album.uid} #{Settings.topic.track.created} #{track.id} #{track.play_path_64}"
         
           if track.tags
             track.tags.split(',').each do |tag|
@@ -175,12 +175,12 @@ module CoreAsync
       last_tr ||= TrackRecord.shard(album.uid).where(uid:album.uid,album_id:album.id,status:1,is_public:1,is_deleted:0).last
 
       if last_tr
-        #logger.info("#{Time.now} last_tr.track_id #{last_tr.track_id} album.last_uptrack_id #{album.last_uptrack_id}")
+        #logger.info("last_tr.track_id #{last_tr.track_id} album.last_uptrack_id #{album.last_uptrack_id}")
         if last_tr.track_id != album.last_uptrack_id
           # 更新专辑的最后更新声音
           album.update_attributes(last_uptrack_id: last_tr.track_id, last_uptrack_at: last_tr.created_at, last_uptrack_title: last_tr.title, last_uptrack_cover_path: last_tr.cover_path)
           $rabbitmq_channel.queue('last_uptrack.rb', durable: true).publish(Hessian2.write({ album_id: album.id, last_uptrack_at: last_tr.created_at }), content_type: 'text/plain')
-          logger.info("#{Time.now} publish last_uptrack.rb #{last_tr.created_at}")
+          logger.info("publish last_uptrack.rb #{last_tr.created_at}")
         end
         # 更新 用户最新发的声音
         user = $profile_client.queryUserBasicInfo(last_tr.uid)
@@ -208,7 +208,7 @@ module CoreAsync
       elsif album.last_uptrack_id # last_tr不存在，清掉专辑的最后更新声音信息
         album.update_attributes(last_uptrack_id: nil, last_uptrack_at: nil, last_uptrack_title: nil, last_uptrack_cover_path: nil)
         $rabbitmq_channel.queue('last_uptrack.rb', durable: true).publish(Hessian2.write({ album_id: album.id, last_uptrack_at: nil }), content_type: 'text/plain')
-        logger.info("#{Time.now} publish last_uptrack.rb")
+        logger.info("publish last_uptrack.rb")
       end
 
       # 删除的声音
@@ -230,7 +230,7 @@ module CoreAsync
 
             TrackOffWorker.perform_async(:track_off,track.id,true)
             $rabbitmq_channel.fanout(Settings.topic.track.destroyed, durable: true).publish(oj_dump(track.to_topic_hash.merge(updated_at: Time.now, is_feed: true, ip: ip)), content_type: 'text/plain', persistent: true)
-            logger.info "#{Time.now} #{album.uid} topic.track.destroyed #{track.id}"
+            logger.info "#{album.uid} topic.track.destroyed #{track.id}"
 
             HumanRecommendCategoryTrack.where(track_id: track.id).each{|r| r.destroy }
             HumanRecommendTagTrack.where(track_id: track.id).each{|r| r.destroy }
@@ -246,7 +246,7 @@ module CoreAsync
           track = Track.shard(id).where(id: id, uid: album.uid).first
           if track
             $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash.merge(ip: ip)), content_type: 'text/plain', persistent: true)
-            logger.info "#{Time.now} #{album.uid} #{Settings.topic.track.updated} #{track.id}"
+            logger.info "#{album.uid} #{Settings.topic.track.updated} #{track.id}"
           end
         end
       end
@@ -265,7 +265,7 @@ module CoreAsync
             # 专辑播放数+
             if record.op_type == 1 && plays > 0
               $counter_client.incr(Settings.counter.album.plays, album.id, plays)
-              #logger.info "#{Time.now} #{album.title} #{Settings.counter.album.plays} + #{plays}"
+              #logger.info "#{album.title} #{Settings.counter.album.plays} + #{plays}"
             end
 
             $rabbitmq_channel.fanout(Settings.topic.track.updated, durable: true).publish(oj_dump(track.to_topic_hash.merge(ip: ip)), content_type: 'text/plain', persistent: true)
@@ -293,7 +293,7 @@ module CoreAsync
                 old.save
 
                 $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(old.to_topic_hash.merge(ip: ip)), content_type: 'text/plain', persistent: true)
-                logger.info "#{Time.now} #{album.uid} #{Settings.topic.album.updated} old #{old.id}"
+                logger.info "#{album.uid} #{Settings.topic.album.updated} old #{old.id}"
 
                 # 老专辑声音数-
                 #$counter_client.decr(Settings.counter.album.tracks, old.id, 1) if track.status == 1 && track.is_public
@@ -301,7 +301,7 @@ module CoreAsync
                 # 专辑播放数-
                 if record.op_type == 1 && plays > 0
                   $counter_client.decr(Settings.counter.album.plays, old.id, plays)
-                  logger.info "#{Time.now} #{old.title} #{Settings.counter.album.plays} - #{plays}"
+                  logger.info "#{old.title} #{Settings.counter.album.plays} - #{plays}"
                 end
                
               end
@@ -317,7 +317,7 @@ module CoreAsync
           #$counter_client.incr(Settings.counter.user.albums, album.uid, 1)
 
           $rabbitmq_channel.fanout(Settings.topic.album.created, durable: true).publish(oj_dump(album.to_topic_hash.merge(user_agent: user_agent, ip: ip, is_feed: true)), content_type: 'text/plain', persistent: true)
-          logger.info "#{Time.now} #{album.uid} #{Settings.topic.album.created} #{album.id}"
+          logger.info "#{album.uid} #{Settings.topic.album.created} #{album.id}"
 
           if album.tags
             album.tags.split(',').each do |tag|
@@ -355,7 +355,7 @@ module CoreAsync
         end
       else # 更新专辑
         $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(album.to_topic_hash.merge(ip: ip, has_new_track: passed_new_public_record_ids.size > 0)), content_type: 'text/plain', persistent: true)
-        logger.info "#{Time.now} #{album.uid} #{Settings.topic.album.updated} #{album.id}"
+        logger.info "#{album.uid} #{Settings.topic.album.updated} #{album.id}"
       end
 
       # album origin
@@ -391,9 +391,9 @@ module CoreAsync
       end
 
       
-      logger.info "#{Time.now} #{album.uid} #{album.title} #{created_record_ids.inspect}"
+      logger.info "#{album.uid} #{album.title} #{created_record_ids.inspect}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

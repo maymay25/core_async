@@ -86,9 +86,9 @@ module CoreAsync
         end
       end # if pass_tracks.size > 0
 
-      logger.info "#{Time.now} on #{uid}"
+      logger.info "on #{uid}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

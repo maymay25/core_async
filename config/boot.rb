@@ -7,10 +7,8 @@ module Sinarey
   @env = ENV['RACK_ENV'] || 'development'
 
   if @env=='production'
-    @secret = File.open(@root+'/config/production/secret').readline.chomp
     @core_root = File.open(File.join(@root, '/config/production/core.root')).readline.chomp
   else
-    @secret = File.open(@root+'/config/secret').readline.chomp
     if RUBY_PLATFORM =~ /mingw/
       @core_root = File.open(File.join(@root, '/config/core.root')).readline.chomp
     else
@@ -20,7 +18,7 @@ module Sinarey
   @session_key = 'rack.session'
 
   class << self
-    attr_reader :root,:secret,:session_key,:core_root
+    attr_reader :root,:core_root
     attr_accessor :env
   end
   

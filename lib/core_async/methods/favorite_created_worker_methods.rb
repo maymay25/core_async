@@ -8,7 +8,7 @@ module CoreAsync
       method(action).call(*args)
     end
 
-    def favorite_created(fav_id,uid,upload_source,ip,sharing_to,dotcom)
+    def favorite_created(fav_id,uid,upload_source,sharing_to,dotcom)
       fav = Favorite.shard(uid).where(id: fav_id).first
       return if fav.nil?
       user = $profile_client.queryUserBasicInfo(fav.uid)
@@ -61,9 +61,9 @@ module CoreAsync
       else
         LatestFavorite.create(hash)
       end
-      logger.info "#{Time.now} #{uid} #{fav_id} #{sharing_to}"
+      logger.info "#{uid} #{fav_id} #{sharing_to}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

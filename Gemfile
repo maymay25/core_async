@@ -58,7 +58,12 @@ gem 'writeexcel',require: []
 #rake tasks
 gem 'activerecord', '~> 3.2', require: []
 
-#schedule
+
+#require in methods
+
+gem 'tzinfo', '~> 0.3.37', require: []
+
+gem 'hbaserb', '0.0.5', require: []
 
 gem 'amqp',require: []
 

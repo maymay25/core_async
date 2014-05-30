@@ -35,9 +35,9 @@ module CoreAsync
         end
       end
       
-      logger.info "#{Time.now} #{track.uid} #{track.id} #{track.title} #{share_opts.inspect}"
+      logger.info "#{track.uid} #{track.id} #{track.title} #{share_opts.inspect}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -123,7 +123,7 @@ module CoreAsync
             tags: track.tags
           )
 
-          logger.info "#{Time.now} ApprovingTrack #{track.uid} #{track.id} #{track.title} created"
+          logger.info "ApprovingTrack #{track.uid} #{track.id} #{track.title} created"
         end
       end
     end

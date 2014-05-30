@@ -1,0 +1,109 @@
+﻿
+album.off DONE
+
+album.updated DONE
+
+album.resend DONE
+
+comment.created DONE
+
+dig_status.to DONE
+
+favorite.created DONE
+
+following.created DONE
+
+following.destroyed DONE
+
+incr_album_play DONE
+
+message.created DONE
+
+messages.dj DONE
+
+relay.created DONE
+
+track.off DONE
+
+track.on DONE
+
+track.played DONE
+
+updated.track.pic.category DONE
+
+user.off DONE
+
+user.on DONE
+
+user_audit DONE
+
+#以下几个是subscribe queue
+Settings.topic.album.destroyed    album.off
+Settings.topic.follow.created     following.created
+Settings.topic.track.played       incr_album_play.track.played
+Settings.topic.track.played       track.played
+Settings.topic.track.relay        relay.created
+Settings.topic.track.destroyed    track.off
+
+
+#另外一些subscribe queue
+
+announcements  TODO
+comment.destroyed  DONE
+audio.queue  DONE
+last_uptrack.rb   DONE
+packapp.feedback  DONE
+subapp.created    DONE
+stat.friend.register 弃用 thirdparty.fans.subscribe.rb
+user.update.audit  DONE
+
+
+
+
+#一些没有处理的schedule
+delayed_publish.rb DONE
+subapp.user.day.scheduler.rb  已确认弃用 @jimmy
+
+
+#TODO 其它没有处理的ruby文件  放到script文件下
+ad_backend_position_report.rb
+getrow_hbase.rb
+huanliang_m_stat.rb
+packapp.android.production.bunny.rb
+packapp.ios.production.bunny.rb
+trackdownloadback.rb
+
+
+
+
+#TODO 一些schedule 在script目录提供手动执行的脚本
+
+channel_stat.day.rb
+track.day.download.rb
+user.day.download.rb
+subapp.track.day.download.rb
+backup_human_recommends.rb
+check_special_human_recommends.rb
+gen_android_channel_focus.rb
+gen_hnsjt.rb
+gen_hnxxt.rb
+gen_neteasenews.rb
+gen_sohunews.rb
+
+
+
+
+
+
+#core_async 调用示例
+
+#UserOnWorker.perform_async(:user_on,13028)
+
+#UserOffWorker.perform_async(:user_off,13028,true,true)
+
+#BackendWorker.perform_async(:update_track_pic_category,18,79531,false,nil,true,10)
+
+#MessagesSendWorker.perform_async(:messages_send,1,'测试群发私信',18,nil)
+#MessagesSendWorker.perform_async(:messages_send,2,'测试群发私信--选人',18,[18,19,20])
+#MessagesSendWorker.perform_async(:messages_send,3,'测试群发私信--全体非机器人主播',18,nil)
+

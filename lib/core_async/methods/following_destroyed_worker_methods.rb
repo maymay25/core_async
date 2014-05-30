@@ -38,9 +38,9 @@ module CoreAsync
         created_at: Time.now
       }), content_type: 'text/plain', persistent: true)
       
-      logger.info "#{Time.now} #{uid} unfollow #{following_uid}"
+      logger.info "#{uid} unfollow #{following_uid}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

@@ -216,9 +216,9 @@ module CoreAsync
         message = {syncType: 'relay', cleintType:'web', uid: uid.to_s, thirdpartyNames: sharing_to, title: track.title, summary: track.intro, comment: share_content, url: "#{Settings.home_root}/#{track.uid}/sound/#{track.id}", images: file_url(track.cover_path)}
         $rabbitmq_channel.queue('thirdparty.feed.queue', durable: true).publish(oj_dump(message), content_type: 'text/plain')
       end
-      logger.info "#{Time.now} #{uid} #{tid} #{sharing_to}\n"
+      logger.info "#{uid} #{tid} #{sharing_to}\n"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e 
     end
 

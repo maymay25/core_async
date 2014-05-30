@@ -220,9 +220,9 @@ module CoreAsync
         )
       end
 
-      logger.info "#{Time.now} #{comment_id} #{track_id}"
+      logger.info "#{comment_id} #{track_id}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

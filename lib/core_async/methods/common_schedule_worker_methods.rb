@@ -1,4 +1,6 @@
-require 'core_async_hbase'
+
+require 'core_async_hbaserb'
+
 require 'writeexcel'
 
 module CoreAsync
@@ -165,7 +167,7 @@ module CoreAsync
         recomm = HumanRecommendCategoryUser.where(category_id: special.category_id, position: special.position).first
         if recomm 
           if recomm.uid != special.uid
-            user = PROFILE_SERVICE.queryUserBasicInfo(special.uid)
+            user = $profile_client.queryUserBasicInfo(special.uid)
             next if user.nil?
             recomm.category_id = special.category_id
             recomm.uid = special.uid
@@ -178,7 +180,7 @@ module CoreAsync
             recomm.save
           end
         else
-          user = PROFILE_SERVICE.queryUserBasicInfo(special.uid)
+          user = $profile_client.queryUserBasicInfo(special.uid)
           next if user.nil?
           HumanRecommendCategoryUser.create(
             category_id: special.category_id,
@@ -524,10 +526,11 @@ module CoreAsync
           end
         end
       end
+      logger.info "check_special_human_recommends finish"
 
       # end category > tag > track
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "check_special_human_recommends #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -696,17 +699,18 @@ module CoreAsync
             is_locked: r.is_locked)
         end
       end
+      logger.info "backup_human_recommends finish"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "backup_human_recommends #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
     def update_baidu_count
       key = Settings.baiduyuyincount
-      cache = REDIS.get(key)
+      cache = $redis.get(key)
 
       if cache.nil?
-        REDIS.set(key, "1")
+        $redis.set(key, "1")
       end
 
       baidu_last_count = BaiduCount.last.count
@@ -718,8 +722,9 @@ module CoreAsync
       baidu_count.day_count = day_count
       baidu_count.up_date = Time.now
       baidu_count.save
+      logger.info "update_baidu_count finish"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "update_baidu_count #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -773,10 +778,61 @@ module CoreAsync
           row = d[-1]
         end
       end
+      logger.info "update_channel_stat finish"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "update_channel_stat #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end 
+
+    def delayed_publish
+      key = Settings.dpcount
+      cache = $redis.get(key)
+      if cache.nil?
+        $redis.set(key, "1")
+      end
+
+      keyt = Settings.dptcount
+      cachet = $redis.get(keyt)
+      if cache.nil?
+        $redis.set(keyt, "1")
+      end
+
+      keya = Settings.dpacount
+      cachea = $redis.get(keya)
+      if cache.nil?
+        $redis.set(keya, "1")
+      end
+
+      count = DelayedPublish.last.count
+      day_count = cache.to_i - count.to_i
+
+      tcount = DelayedPublish.last.tcount
+      day_tcount = cachet.to_i - tcount.to_i
+
+      acount = DelayedPublish.last.acount
+      day_acount = cachea.to_i - acount.to_i
+
+      delayed_publish = DelayedPublish.new
+      delayed_publish.count = day_count
+      delayed_publish.tcount = day_tcount
+      delayed_publish.acount = day_acount
+      delayed_publish.save
+
+      # baidu_last_count = BaiduCount.last.count
+      # day_count = cache.to_i - baidu_last_count.to_i
+
+      # baidu_count = BaiduCount.new
+
+      # baidu_count.count = cache
+      # baidu_count.day_count = day_count
+      # baidu_count.up_date = Time.now
+      # baidu_count.save
+
+      logger.info "delayed_publish finish"
+    rescue Exception => e
+      logger.error "delayed_publish #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      raise e
+    end
 
     def gen_andchannel_focus
       chan_x_image = {}
@@ -823,15 +879,14 @@ module CoreAsync
       end
 
       chan_x_image.each do |channel, image|
-        REDIS.set("andchannel_focus#{channel}", oj_dump(image))
+        $redis.set("andchannel_focus#{channel}", oj_dump(image))
       end
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
     def login_day_download
-
       client = HbaseClient.new(Settings.hbase_ip, 9090)
       client.start
 
@@ -876,10 +931,11 @@ module CoreAsync
       end
 
       workbook.close
+      
       client.close_scan(cid)
       client.close
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -930,7 +986,58 @@ module CoreAsync
       client.close_scan(cid)
       client.close
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      raise e
+    end
+
+    def user_day_download
+      client = HbaseClient.new(Settings.hbase_ip, 9090)
+      client.start
+
+      time = Time.now.to_date - 1.day
+      stime = time.to_s.gsub("-","")
+      # cid = client.get_scanner_id("hb_play_user_day", "#{stime}_0_0","#{stime}_0_:")
+
+      # time = ARGV[0].to_date
+      # stime = ARGV[0].gsub("-","")
+      # cid = client.get_scanner_id("hb_play_user_day", "#{stime}_0_0", "#{stime}_0_:")
+
+      # 新方法取scanner_id
+      tscan = Apache::Hadoop::Hbase::Thrift::TScan.new()
+      tscan.startRow = "#{stime}_0_0"
+      tscan.stopRow = "#{stime}_0_:"
+      tscan.caching = 1000
+      cid = client.get_scanner_id2("hb_play_user_day", tscan)  
+      
+      #根目录是否存在，不存在则新建
+      unless Dir.exist?(Settings.stat_root)
+        FileUtils.mkdir_p(Settings.stat_root)
+      end
+      
+      #目录不存在时新建
+      unless Dir.exist?("#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}")
+        FileUtils.mkdir_p("#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}")
+      end
+
+      workbook = WriteExcel.new("#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}/#{time}_user.xls")
+
+      logger.info "#{Settings.stat_root}/#{time.year}/m/#{time.month}/#{time.day}/#{time}_user.xls"
+
+      # num = 0
+
+      while true
+        # puts num
+        result = loop_get_user(workbook, 1, client, cid)
+        # break if num == 0
+        break if result == []
+        # num += 1
+      end
+      workbook.close
+      
+      client.close_scan(cid)
+      client.close
+    rescue Exception => e
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -996,6 +1103,38 @@ module CoreAsync
         status.each_with_index do |f,i|
           worksheet.write(len + i, 0, f)
         end
+        len += 1000
+      end
+
+      # len = 1
+      status
+    end
+
+    #循环调用此方法，读取数据 used by `user_day_download`
+    def loop_get_user(wb, len, client, cid, is_subapp = false)
+      # puts "in"
+      worksheet = wb.add_worksheet
+
+      headings = %w(用户 匿名标识 是否加V 总时长 总声音数 总收听次数 手机时长 手机声音数 手机收听次数 PC时长 
+                    PC声音数 PC次数 非爬虫时长 非爬虫声音数 非爬虫收听次数 爬虫时长 爬虫声音数 爬虫收听次数 
+                    iphone时长 iphone声音数 iphone收听次数 ipad时长 ipad声音数 ipad收听次数 
+                    车载时长 车载声音数 车载收听次数 android时长 android声音数 android收听次数 wp时长 wp声音数 wp收听次数)
+      
+      bold = wb.add_format(:bold => 1)
+
+      worksheet.set_column('A:N', 12)
+      worksheet.set_row(0, 20, bold)
+      worksheet.write('A1', headings)
+      while true
+        # puts "write"
+        break if len == 65001
+        status = client.get_re_user(cid, is_subapp)
+        # puts status
+        break if status == []
+        status.each_with_index do |f,i|
+          worksheet.write(len + i, 0, f)
+        end
+        # worksheet.write(len, 0, status)
         len += 1000
       end
 

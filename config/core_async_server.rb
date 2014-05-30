@@ -29,14 +29,14 @@ require File.join(Sinarey.core_root, 'app/models/human_recommend_category_tag_al
 require File.join(Sinarey.core_root, 'app/models/human_recommend_category_tag_track_backup.rb')
 require File.join(Sinarey.core_root, 'app/models/human_recommend_category_tag_track_special.rb')
 require File.join(Sinarey.core_root, 'app/models/channel_focus.rb')
+require File.join(Sinarey.core_root, 'app/models/editor.rb')
+require File.join(Sinarey.core_root, 'app/models/editor_chat.rb')
+require File.join(Sinarey.core_root, 'app/models/editor_recommend.rb')
+
 
 require File.join(Sinarey.core_root, 'app/helpers/inet.rb')
 require File.join(Sinarey.core_root, 'app/helpers/core_helper.rb')
 require File.join(Sinarey.core_root, 'app/helpers/apn_dispatch_helper.rb')
-
-
-require File.expand_path('establish_connection.rb', __dir__)
-
 
 requires = Dir[File.expand_path('initializers/*.rb', __dir__)]
 

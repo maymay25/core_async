@@ -126,15 +126,15 @@ module CoreAsync
               }), content_type: 'text/plain', persistent: true)
 
             else
-              logger.info "#{Time.now} destroy #{comment.id} failed"
+              logger.info "destroy #{comment.id} failed"
             end
           end
         end          
       end
 
-      logger.info "#{Time.now} off #{uid} del_albums_tracks #{del_albums_tracks} del_comments #{del_comments}"
+      logger.info "off #{uid} del_albums_tracks #{del_albums_tracks} del_comments #{del_comments}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

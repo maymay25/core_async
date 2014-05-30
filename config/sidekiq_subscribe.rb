@@ -1,12 +1,13 @@
 
-require File.expand_path("../core_async_client.rb",__FILE__)
-
-require File.expand_path("../subscribe_lib.rb",__FILE__)
+puts 'deploying sidekiq_subscribe ...'
 
 require 'amqp'
 require 'eventmachine'
 
-puts 'deploying sidekiq_subscribe ...'
+require File.expand_path("../core_async_client.rb",__FILE__)
+
+require File.expand_path("../subscribe_lib.rb",__FILE__)
+
 
 EventMachine.run do
   AMQP.start(host: Settings.rabbitmq.host) do |connection|

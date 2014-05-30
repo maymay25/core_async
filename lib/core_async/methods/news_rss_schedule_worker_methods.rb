@@ -12,7 +12,7 @@ module CoreAsync
       xml = '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><copyright>Copyright @喜马拉雅 www.ximalaya.com</copyright><language>zh-cn</language><users>'
 
       Settings.neteasenews_uids.each do |uid|
-        user = PROFILE_SERVICE.queryUserBasicInfo(uid)
+        user = $profile_client.queryUserBasicInfo(uid)
         xml << "\n<user>"
         xml << "\n<uid>#{uid}</uid>"
         xml << "\n<nickname>#{CGI.escapeHTML(user.nickname) if user.nickname}</nickname>"
@@ -39,9 +39,9 @@ module CoreAsync
 
       xml << '</users></channel></rss>'
 
-      REDIS.set(Settings.pagedata.neteasenews, xml)
+      $redis.set(Settings.pagedata.neteasenews, xml)
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -78,9 +78,9 @@ module CoreAsync
 
       xml << '</channel></rss>'
 
-      REDIS.set(Settings.pagedata.sohunews, xml)
+      $redis.set(Settings.pagedata.sohunews, xml)
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -116,9 +116,9 @@ module CoreAsync
 
       xml << '</channel></rss>'
 
-      REDIS.set('hnxxt', xml)
+      $redis.set('hnxxt', xml)
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -646,9 +646,9 @@ module CoreAsync
 
       xml << '</channel></rss>'
 
-      REDIS.set('hnsjt', xml)
+      $redis.set('hnsjt', xml)
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

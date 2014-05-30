@@ -3,4 +3,5 @@
 !sidekiq
 !schedule
 !subscribe
+!script
 !.gitignore

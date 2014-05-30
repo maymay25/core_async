@@ -60,7 +60,7 @@ module CoreAsync
         end
       elsif type == 2
         to_uids.each do |to_uid|
-          to_user = PROFILE_SERVICE.queryUserBasicInfo(to_uid)
+          to_user = $profile_client.queryUserBasicInfo(to_uid)
 
           linkman = Linkman.shard(to_user.uid).where(uid: to_user.uid, linkman_uid: zhubo.uid).first
           if linkman
@@ -108,7 +108,7 @@ module CoreAsync
               badge: get_badge(to_user.uid),
               message_content: "\"#{zhubo.nickname}\"给您发来私信:#{content}"
             }), content_type: 'text/plain')
-            logger.info "#{Time.now} #{to_user.uid} pushed"
+            logger.info "#{to_user.uid} pushed"
             # end
 
           end
@@ -153,9 +153,9 @@ module CoreAsync
         end
       end
 
-      logger.info "#{Time.now} #{type},#{content},#{uid},#{to_uids.size}}"
+      logger.info "#{type},#{content},#{uid},#{to_uids.size}}"
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

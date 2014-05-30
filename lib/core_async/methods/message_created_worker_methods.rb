@@ -33,10 +33,10 @@ module CoreAsync
         EditorChat.create(is_in: true, uid: with_editor.uid, with_uid: chat.uid, with_nickname: chat.nickname, content: chat.content)
       end
 
-      logger.info "#{Time.now} #{uid} #{chat_id}"
+      logger.info "#{uid} #{chat_id}"
 
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

@@ -9,7 +9,7 @@ module CoreAsync
     def track_played(track_id,uid)
       if uid and track_id
         now = Time.now
-        oj = REDIS.get("listened#{uid}")
+        oj = $redis.get("listened#{uid}")
         if oj
           begin
             arr = Oj.load(oj)
@@ -23,10 +23,10 @@ module CoreAsync
         end
 
         arr.insert(0, [ now, track_id ])
-        REDIS.set("listened#{uid}", oj_dump(arr))
+        $redis.set("listened#{uid}", oj_dump(arr))
       end
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -34,7 +34,7 @@ module CoreAsync
       tir = TrackInRecord.fetch(track_id)
       $counter_client.incr(Settings.counter.album.plays, tir.album_id, 1) if tir && tir.album_id
     rescue Exception => e
-      logger.error "#{Time.now} #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
