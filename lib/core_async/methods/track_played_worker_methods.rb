@@ -31,6 +31,7 @@ module CoreAsync
     end
 
     def incr_album_plays(track_id)
+      return if track_id.blank?
       tir = TrackInRecord.fetch(track_id)
       $counter_client.incr(Settings.counter.album.plays, tir.album_id, 1) if tir && tir.album_id
     rescue Exception => e
