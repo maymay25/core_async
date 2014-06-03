@@ -21,9 +21,9 @@ EventMachine.run do
 
     subscribe_album_updated_dj(channel)
 
-    # subscribe_album_off(channel)
+    subscribe_album_off(channel)
 
-    # subscribe_track_on(channel)
+    subscribe_track_on(channel)
 
     # subscribe_track_off(channel)
 
