@@ -35,7 +35,7 @@ EventMachine.run do
 
     subscribe_favorite_created_dj(channel)
 
-    subscribe_following_created_rb(channel)
+    # subscribe_following_created_rb(channel)
 
     # subscribe_following_destroyed_rb(channel)
 
