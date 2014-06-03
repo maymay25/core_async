@@ -38,6 +38,9 @@ require File.join(Sinarey.core_root, 'app/helpers/inet.rb')
 require File.join(Sinarey.core_root, 'app/helpers/core_helper.rb')
 require File.join(Sinarey.core_root, 'app/helpers/apn_dispatch_helper.rb')
 
+#initializers里的 xunch 依赖 activerecord 的连接，否则会报错，所以这里提前require
+require File.expand_path('establish_connection', __dir__)
+
 requires = Dir[File.expand_path('initializers/*.rb', __dir__)]
 
 requires.each do |file|
