@@ -29,9 +29,9 @@ EventMachine.run do
 
     subscribe_album_resend(channel)
 
-    # subscribe_comment_created_dj(channel)
+    subscribe_comment_created_dj(channel)
 
-    # subscribe_comment_destroyed_rb(channel)
+    subscribe_comment_destroyed_rb(channel)
 
     # subscribe_favorite_created_dj(channel)
 
