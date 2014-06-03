@@ -25,9 +25,9 @@ EventMachine.run do
 
     subscribe_track_on(channel)
 
-    # subscribe_track_off(channel)
+    subscribe_track_off(channel)
 
-    # subscribe_album_resend(channel)
+    subscribe_album_resend(channel)
 
     # subscribe_comment_created_dj(channel)
 
