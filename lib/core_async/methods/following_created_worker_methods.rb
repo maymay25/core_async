@@ -45,9 +45,9 @@ module CoreAsync
         dispatch_follow(msg)
       end
 
-      logger.info "#{first_uid} #{notice_uids.inspect}"
+      logger.info "following_created #{first_uid} #{notice_uids.inspect}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "following_created #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

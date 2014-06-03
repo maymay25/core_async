@@ -115,7 +115,7 @@ module CoreAsync
       end # album_ids.each do |album_id|
       logger.info "resend #{album_ids.inspect} to #{uid}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "album_resend #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

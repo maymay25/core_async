@@ -393,7 +393,7 @@ module CoreAsync
       
       logger.info "#{album.uid} #{album.title} #{created_record_ids.inspect}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "album_updated #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

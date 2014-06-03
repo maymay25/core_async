@@ -8,9 +8,7 @@ module CoreAsync
 
     # off_type 1: 连同声音删除 2: 不删声音 3: 连同声音下架
     def album_off(album_id,is_off,off_type)
-
       trackset = TrackSet.shard(album_id).where(id: album_id).first
-
       if trackset
         #$counter_client.decr(Settings.counter.user.albums, trackset.uid, 1) if is_off  # 和计数同步机制冲突
 
@@ -153,10 +151,8 @@ module CoreAsync
       if user_albums_count != db_user_albums_count
         $counter_client.set(Settings.counter.user.albums, trackset.uid, db_user_albums_count)
       end
-
-
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "album_off #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

@@ -882,7 +882,7 @@ module CoreAsync
         $redis.set("andchannel_focus#{channel}", oj_dump(image))
       end
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "gen_andchannel_focus #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -935,7 +935,7 @@ module CoreAsync
       client.close_scan(cid)
       client.close
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "login_day_download #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -986,7 +986,7 @@ module CoreAsync
       client.close_scan(cid)
       client.close
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "track_day_download #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -1037,7 +1037,7 @@ module CoreAsync
       client.close_scan(cid)
       client.close
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "user_day_download #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

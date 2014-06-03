@@ -222,7 +222,7 @@ module CoreAsync
 
       logger.info "#{comment_id} #{track_id}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "comment_created #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

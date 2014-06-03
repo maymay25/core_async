@@ -153,9 +153,9 @@ module CoreAsync
         end
       end
 
-      logger.info "#{type},#{content},#{uid},#{to_uids.size}}"
+      logger.info "messages_send #{type},#{content},#{uid},#{to_uids.size}}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "messages_send #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

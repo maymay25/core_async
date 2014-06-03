@@ -132,9 +132,9 @@ module CoreAsync
         end          
       end
 
-      logger.info "off #{uid} del_albums_tracks #{del_albums_tracks} del_comments #{del_comments}"
+      logger.info "user_off #{uid} del_albums_tracks #{del_albums_tracks} del_comments #{del_comments}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "user_off #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

@@ -48,7 +48,7 @@ Settings.topic.track.destroyed    track.off
 
 #另外一些subscribe queue
 
-announcements  TODO
+announcements  DONE
 comment.destroyed  DONE
 audio.queue  DONE
 last_uptrack.rb   DONE
@@ -65,7 +65,7 @@ delayed_publish.rb DONE
 subapp.user.day.scheduler.rb  已确认弃用 @jimmy
 
 
-#TODO 其它没有处理的ruby文件  放到script文件下
+#DONE 其它没有处理的ruby文件  放到script文件下
 ad_backend_position_report.rb
 getrow_hbase.rb
 huanliang_m_stat.rb
@@ -76,7 +76,7 @@ trackdownloadback.rb
 
 
 
-#TODO 一些schedule 在script目录提供手动执行的脚本
+#DONE 一些schedule 在script目录提供手动执行的脚本
 
 channel_stat.day.rb
 track.day.download.rb

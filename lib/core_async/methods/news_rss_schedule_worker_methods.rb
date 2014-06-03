@@ -41,7 +41,7 @@ module CoreAsync
 
       $redis.set(Settings.pagedata.neteasenews, xml)
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "gen_neteasenews_rss #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -80,7 +80,7 @@ module CoreAsync
 
       $redis.set(Settings.pagedata.sohunews, xml)
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "gen_sohunews_rss #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -118,7 +118,7 @@ module CoreAsync
 
       $redis.set('hnxxt', xml)
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "gen_hnxxt_rss #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

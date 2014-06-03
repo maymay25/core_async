@@ -206,7 +206,7 @@ begin
   transport.close()
 
 rescue Exception => e 
-	logger_error ||= Logger.new(File.join(CORE_ROOT, "log/getrow.error.log"))
+	logger_error = Logger.new("#{app_root}/log/script/getrow.error.log")
   logger_error.info Time.now
   logger_error.info "#{e.class} #{e.message}"
   logger_error.info e.backtrace.join("\n")

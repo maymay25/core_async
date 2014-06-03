@@ -69,6 +69,22 @@ module CoreAsync
       raise e
     end
 
+    def announcements(start_uid,last_uid,notice_type)
+      logger.info "announcements start from #{start_uid} upto #{last_uid}"
+      count = 0
+
+      start_uid.upto(last_uid).each do |id|
+        count += 1
+        # 消息加1
+        $counter_client.incr(notice_type, id, 1)
+      end
+
+      logger.info "announcements sum: #{count}"
+    rescue Exception => e
+      logger.error "announcements #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      raise e
+    end
+
     private
 
     def logger

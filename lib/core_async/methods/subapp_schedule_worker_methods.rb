@@ -62,7 +62,7 @@ module CoreAsync
       client.close_scan(cid)
       client.close
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "subapp_track_day_download #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

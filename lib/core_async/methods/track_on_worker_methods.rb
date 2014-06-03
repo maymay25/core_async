@@ -35,9 +35,9 @@ module CoreAsync
         end
       end
       
-      logger.info "#{track.uid} #{track.id} #{track.title} #{share_opts.inspect}"
+      logger.info "track_on #{track.uid} #{track.id} #{track.title} #{share_opts.inspect}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "track_on #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

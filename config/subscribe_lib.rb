@@ -333,6 +333,22 @@ def subscribe_user_audit(channel)
   puts "#{Time.new} subscribe_user_audit started"
 end
 
+def subscribe_announcements(channel)
+  channel.queue('announcements', durable: true).subscribe do |payload|
+    begin
+      params = Oj.load(payload)
+
+      args = [ params['start_uid'],params['last_uid'],params['notice_type'] ]
+      CoreAsync::BackendWorker.perform_async(:announcements,*args)
+      
+      logger.info "subscribe_announcements #{args.join(',')}"
+    rescue Exception => e
+      logger.error "subscribe_announcements #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+    end
+  end
+  puts "#{Time.new} subscribe_announcements started"
+end
+
 def subscribe_user_update_audit(channel)
   channel.queue('user.update.audit', durable: true).subscribe do |payload|
     begin

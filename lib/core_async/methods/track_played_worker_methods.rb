@@ -26,7 +26,7 @@ module CoreAsync
         $redis.set("listened#{uid}", oj_dump(arr))
       end
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "track_played #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
@@ -34,7 +34,7 @@ module CoreAsync
       tir = TrackInRecord.fetch(track_id)
       $counter_client.incr(Settings.counter.album.plays, tir.album_id, 1) if tir && tir.album_id
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "incr_album_plays #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

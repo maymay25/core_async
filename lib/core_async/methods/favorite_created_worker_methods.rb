@@ -61,9 +61,9 @@ module CoreAsync
       else
         LatestFavorite.create(hash)
       end
-      logger.info "#{uid} #{fav_id} #{sharing_to}"
+      logger.info "favorite_created #{uid} #{fav_id} #{sharing_to}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "favorite_created #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

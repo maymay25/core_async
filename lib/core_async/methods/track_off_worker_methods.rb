@@ -56,10 +56,10 @@ module CoreAsync
         end
       end
       
-      logger.info "#{track.id} offed"
+      logger.info "track_off #{track.id} offed"
       
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "track_off #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 

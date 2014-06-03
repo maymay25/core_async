@@ -18,7 +18,7 @@ module CoreAsync
       end
       logger.info "comment_destroyed #{comment_id},#{track_id}"
     rescue Exception => e
-      logger.error "#{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
+      logger.error "comment_destroyed #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
 
