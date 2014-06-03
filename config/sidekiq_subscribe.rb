@@ -33,13 +33,13 @@ EventMachine.run do
 
     subscribe_comment_destroyed_rb(channel)
 
-    # subscribe_favorite_created_dj(channel)
+    subscribe_favorite_created_dj(channel)
 
-    # subscribe_following_created_rb(channel)
+    subscribe_following_created_rb(channel)
 
-    # subscribe_following_destroyed_rb(channel)
+    subscribe_following_destroyed_rb(channel)
 
-    # subscribe_message_created_dj(channel)
+    subscribe_message_created_dj(channel)
 
     # subscribe_relay_created_rb(channel)
 
