@@ -55,7 +55,7 @@ def subscribe_incr_album_plays_track_played(channel)
   puts "#{Time.new} subscribe_incr_album_plays_track_played started"
 end
 
-def subscribe_following_created(channel)
+def subscribe_following_created_rb(channel)
   channel.queue('following.created.rb', durable: true).bind(channel.fanout(Settings.topic.follow.created, durable: true)).subscribe do |payload|
     begin
       params = Oj.load(payload)
@@ -208,22 +208,6 @@ def subscribe_favorite_created_dj(channel)
     end
   end
   puts "#{Time.new} subscribe_favorite_created_dj started"
-end
-
-def subscribe_following_created_rb(channel)
-  channel.queue('following.created.rb', durable: true) do |queue|
-    queue.subscribe do |metadata,payload|
-      begin
-        follow_list = Oj.load(payload)
-        CoreAsync::FollowingCreatedWorker.perform_async(:following_created,follow_list)
-        
-        logger.info "subscribe_following_created_rb #{follow_list.join(',')}"
-      rescue Exception => e
-        logger.error "subscribe_following_created_rb #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
-      end
-    end
-  end
-  puts "#{Time.new} subscribe_following_created_rb started"
 end
 
 def subscribe_following_destroyed_rb(channel)
