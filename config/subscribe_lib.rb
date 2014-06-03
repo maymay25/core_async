@@ -62,8 +62,8 @@ def subscribe_following_created(channel)
       follow_list = params.collect{|h| {uid:h['uid'], nickname:h['nickname'], following_uid:h['following_uid']} }
       if follow_list.length>0
         CoreAsync::FollowingCreatedWorker.perform_async(:following_created,follow_list)
-        first_follow = follow_list[0]
-        first_nickname,first_uid,first_following_uid
+        fuser = follow_list[0]
+        first_nickname,first_uid,first_following_uid = fuser['nickname'],fuser['uid'],fuser['following_uid']
         logger.info "subscribe_following_created  #{first_nickname},#{first_uid},#{first_following_uid}   | length=#{follow_list.length}"
       else
         logger.info "subscribe_following_created  but follow_list is empty!!"
@@ -182,6 +182,7 @@ def subscribe_comment_destroyed_rb(channel)
     rescue Exception => e
       logger.error "subscribe_comment_destroyed_rb #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
     end
+  end
 end
 
 def subscribe_favorite_created_dj(channel)
