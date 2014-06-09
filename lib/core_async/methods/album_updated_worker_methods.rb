@@ -50,9 +50,9 @@ module CoreAsync
               elsif track.status == 0
                 uag = UidApproveGroup.where(uid: track.uid).first
 
-                ApprovingTrack.create(album_cover_path: track.album_cover_path,
+                ApprovingTrack.create(album_cover_path: album.cover_path,
+                  album_title: album.title,
                   album_id: track.album_id,
-                  album_title: track.album_title,
                   approve_group_id: uag ? uag.approve_group_id : nil,
                   category_id: track.category_id,
                   cover_path: track.cover_path,
