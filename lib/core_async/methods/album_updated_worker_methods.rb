@@ -115,7 +115,7 @@ module CoreAsync
       # 每个新创建的声音
       if created_tracks.size > 0
         created_tracks.each do |track|
-          TrackOnWorker.perform_async(:track_on, track.id, true, nil, nil)
+          TrackOnWorker.perform_async(:track_on, track.id, true, ip:ip)
           $rabbitmq_channel.fanout(Settings.topic.track.created, durable: true).publish(oj_dump(track.to_topic_hash.merge(user_agent: user_agent, ip: ip, is_feed: !no_feed_track_ids.include?(track.id))), content_type: 'text/plain', persistent: true) if track.play_path_64
           logger.info "#{album.uid} #{Settings.topic.track.created} #{track.id} #{track.play_path_64}"
         

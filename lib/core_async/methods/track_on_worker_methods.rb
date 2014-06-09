@@ -2,23 +2,24 @@ module CoreAsync
 
   module TrackOnWorkerMethods
 
+    include Inet
     include ApnDispatchHelper
 
     def perform(action,*args)
       method(action).call(*args)
     end
 
-    def track_on(track_id,is_new,share_opts,at_users)
+    def track_on(track_id,is_new,options={})
       track = Track.shard(track_id).where(id: track_id).first
       user = $profile_client.queryUserBasicInfo(track.uid)
 
       common_works(track,user)
 
-      update_track_origin(track)
+      update_track_origin(track,options[:ip])
 
       if is_new and track.status == 1 and track.is_public
-        thirdparty_share(share_opts)
-        notify_users(track,at_users)
+        thirdparty_share(options[:share_opts])
+        notify_users(track,options[:at_users])
       end
       
       user_tracks_count = $counter_client.get(Settings.counter.user.tracks, track.uid)
@@ -128,7 +129,7 @@ module CoreAsync
       end
     end
 
-    def update_track_origin(track)
+    def update_track_origin(track,ip)
       hash = track.attributes
       hash.delete('id')
       hash.delete('created_at')
@@ -138,6 +139,7 @@ module CoreAsync
         track_origin = TrackOrigin.new
         track_origin.id = track.id
         track_origin.created_at = track.created_at
+        track_origin.inet_aton_ip = inet_aton(ip)
       end
       track_origin.updated_at = track.updated_at
       track_origin.update_attributes(hash)

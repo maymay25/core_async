@@ -116,8 +116,8 @@ def subscribe_track_on(channel)
     queue.subscribe do |metadata,payload|
       begin
         params = Oj.load(payload)
-        track_id, is_new, share_opts, at_users = params['id'], params['is_new'], params['share'], params['at_users']
-        CoreAsync::TrackOnWorker.perform_async(:track_on,track_id,is_new,share_opts,at_users)
+        track_id, is_new, share_opts, at_users, ip = params['id'], params['is_new'], params['share'], params['at_users'], params['ip']
+        CoreAsync::TrackOnWorker.perform_async(:track_on,track_id,is_new,share_opts:share_opts,at_users:at_users,ip:ip)
         
         logger.info "subscribe_track_on #{track_id},#{is_new},#{share_opts},#{at_users}"
       rescue Exception => e
