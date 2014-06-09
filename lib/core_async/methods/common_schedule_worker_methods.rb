@@ -22,13 +22,14 @@ module CoreAsync
         if recomm 
           if recomm.album_id != special.album_id
             album = TrackSet.fetch(special.album_id)
+            next if album.nil?
             recomm.category_id = special.category_id
             recomm.album_id = special.album_id
             recomm.begin_at = special.begin_at
             recomm.end_at = special.end_at
             recomm.is_locked = true
             recomm.album_uid = album.uid
-            recomm.album_nickname = album.nickname
+            #recomm.album_nickname = album.nickname
             recomm.tags = album.tags
             recomm.title = album.title
             recomm.intro = album.intro ? album.intro[0, 255] : nil
@@ -38,6 +39,7 @@ module CoreAsync
           end
         else
           album = TrackSet.fetch(special.album_id)
+          next if album.nil?
           HumanRecommendCategoryAlbum.create(category_id: special.category_id,
             album_id: special.album_id,
             position: special.position,
@@ -45,7 +47,7 @@ module CoreAsync
             end_at: special.end_at,
             is_locked: true,
             album_uid: album.uid,
-            album_nickname: album.nickname,
+            #album_nickname: album.nickname,
             tags: album.tags,
             title: album.title,
             intro: album.intro ? album.intro[0, 255] : nil,
@@ -94,23 +96,25 @@ module CoreAsync
         recomm = HumanRecommendCategoryTrack.where(category_id: special.category_id, position: special.position).first
         if recomm 
           if recomm.track_id != special.track_id
-            track = TrackInRecord.fetch(special.track_id)
+            track = Track.fetch(special.track_id)
+            next if track.nil?
             recomm.category_id = special.category_id
             recomm.track_id = special.track_id
             recomm.begin_at = special.begin_at
             recomm.end_at = special.end_at
             recomm.is_locked = true
             recomm.track_uid = track.uid
-            recomm.track_nickname = track.nickname
+           # recomm.track_nickname = track.nickname
             recomm.tags = track.tags
             recomm.title = track.title
-            recomm.intro = track.intro ? track.intro[0, 255] : nil
+            recomm.intro = track.intro ? track.intro[0, 255] : ''
             recomm.cover_path = track.cover_path
             recomm.track_created_at = track.created_at
             recomm.save
           end
         else
-          track = TrackInRecord.fetch(special.track_id)
+          track = Track.fetch(special.track_id)
+          next if track.nil?
           HumanRecommendCategoryTrack.create(category_id: special.category_id,
             track_id: special.track_id,
             position: special.position,
@@ -118,10 +122,10 @@ module CoreAsync
             end_at: special.end_at,
             is_locked: true,
             track_uid: track.uid,
-            track_nickname: track.nickname,
+            #track_nickname: track.nickname,
             tags: track.tags,
             title: track.title,
-            intro: track.intro ? track.intro[0, 255] : nil,
+            intro: track.intro ? track.intro[0, 255] : '',
             cover_path: track.cover_path,
             track_created_at: track.created_at)
         end
@@ -237,22 +241,24 @@ module CoreAsync
         if recomm 
           if recomm.album_id != special.album_id
             album = TrackSet.fetch(special.album_id)
+            next if album.nil?
             recomm.tname = special.tname
             recomm.album_id = special.album_id
             recomm.begin_at = special.begin_at
             recomm.end_at = special.end_at
             recomm.is_locked = true
             recomm.album_uid = album.uid
-            recomm.album_nickname = album.nickname
+            #recomm.album_nickname = album.nickname
             recomm.tags = album.tags
             recomm.title = album.title
-            recomm.intro = album.intro ? album.intro[0, 255] : nil
+            recomm.intro = album.intro ? album.intro[0, 255] : ''
             recomm.cover_path = album.cover_path
             recomm.album_created_at = album.created_at
             recomm.save
           end
         else
           album = TrackSet.fetch(special.album_id)
+          next if album.nil?
           HumanRecommendTagAlbum.create(tname: special.tname,
             album_id: special.album_id,
             position: special.position,
@@ -260,7 +266,7 @@ module CoreAsync
             end_at: special.end_at,
             is_locked: true,
             album_uid: album.uid,
-            album_nickname: album.nickname,
+            #album_nickname: album.nickname,
             tags: album.tags,
             title: album.title,
             intro: album.intro ? album.intro[0, 255] : nil,
@@ -309,14 +315,15 @@ module CoreAsync
         recomm = HumanRecommendTagTrack.where(tname: special.tname, position: special.position).first
         if recomm 
           if recomm.track_id != special.track_id
-            track = TrackInRecord.fetch(special.track_id)
+            track = Track.fetch(special.track_id)
+            next if track.nil?
             recomm.tname = special.tname
             recomm.track_id = special.track_id
             recomm.begin_at = special.begin_at
             recomm.end_at = special.end_at
             recomm.is_locked = true
             recomm.track_uid = track.uid
-            recomm.track_nickname = track.nickname
+            #recomm.track_nickname = track.nickname
             recomm.tags = track.tags
             recomm.title = track.title
             recomm.intro = track.intro ? track.intro[0, 255] : nil
@@ -325,7 +332,8 @@ module CoreAsync
             recomm.save
           end
         else
-          track = TrackInRecord.fetch(special.track_id)
+          track = Track.fetch(special.track_id)
+          next if track.nil?
           HumanRecommendTagTrack.create(tname: special.tname,
             track_id: special.track_id,
             position: special.position,
@@ -333,7 +341,7 @@ module CoreAsync
             end_at: special.end_at,
             is_locked: true,
             track_uid: track.uid,
-            track_nickname: track.nickname,
+            #track_nickname: track.nickname,
             tags: track.tags,
             title: track.title,
             intro: track.intro ? track.intro[0, 255] : nil,
@@ -383,6 +391,7 @@ module CoreAsync
         if recomm 
           if recomm.album_id != special.album_id
             album = TrackSet.fetch(special.album_id)
+            next if album.nil?
             recomm.category_id = special.category_id
             recomm.tname = special.tname
             recomm.album_id = special.album_id
@@ -390,7 +399,7 @@ module CoreAsync
             recomm.end_at = special.end_at
             recomm.is_locked = true
             recomm.album_uid = album.uid
-            recomm.album_nickname = album.nickname
+            #recomm.album_nickname = album.nickname
             recomm.tags = album.tags
             recomm.title = album.title
             recomm.intro = album.intro ? album.intro[0, 255] : nil
@@ -400,6 +409,7 @@ module CoreAsync
           end
         else
           album = TrackSet.fetch(special.album_id)
+          next if album.nil?
           HumanRecommendCategoryTagAlbum.create(category_id: special.category_id,
             tname: special.tname,
             album_id: special.album_id,
@@ -408,7 +418,7 @@ module CoreAsync
             end_at: special.end_at,
             is_locked: true,
             album_uid: album.uid,
-            album_nickname: album.nickname,
+            #album_nickname: album.nickname,
             tags: album.tags,
             title: album.title,
             intro: album.intro ? album.intro[0, 255] : nil,
@@ -458,7 +468,8 @@ module CoreAsync
         recomm = HumanRecommendCategoryTagTrack.where(category_id: special.category_id, tname: special.tname, position: special.position).first
         if recomm
           if recomm.track_id != special.track_id
-            track = TrackInRecord.fetch(special.track_id)
+            track = Track.fetch(special.track_id)
+            next if track.nil?
             recomm.category_id = special.category_id
             recomm.tname = special.tname
             recomm.track_id = special.track_id
@@ -466,7 +477,7 @@ module CoreAsync
             recomm.end_at = special.end_at
             recomm.is_locked = true
             recomm.track_uid = track.uid
-            recomm.track_nickname = track.nickname
+            #recomm.track_nickname = track.nickname
             recomm.tags = track.tags
             recomm.title = track.title
             recomm.intro = track.intro ? track.intro[0, 255] : nil
@@ -475,7 +486,8 @@ module CoreAsync
             recomm.save
           end
         else
-          track = TrackInRecord.fetch(special.track_id)
+          track = Track.fetch(special.track_id)
+          next if track.nil?
           HumanRecommendCategoryTagTrack.create(category_id: special.category_id,
             tname: special.tname,
             track_id: special.track_id,
@@ -484,7 +496,7 @@ module CoreAsync
             end_at: special.end_at,
             is_locked: true,
             track_uid: track.uid,
-            track_nickname: track.nickname,
+            #track_nickname: track.nickname,
             tags: track.tags,
             title: track.title,
             intro: track.intro ? track.intro[0, 255] : nil,
@@ -552,7 +564,7 @@ module CoreAsync
             begin_at: r.begin_at,
             end_at: r.end_at,
             album_uid: r.album_uid,
-            album_nickname: r.album_nickname,
+            #album_nickname: r.album_nickname,
             tags: r.tags,
             title: r.title,
             intro: r.intro ? r.intro[0, 255] : nil,
@@ -568,7 +580,7 @@ module CoreAsync
             end_at: r.end_at,
             position: r.position,
             track_uid: r.track_uid,
-            track_nickname: r.track_nickname,
+            #track_nickname: r.track_nickname,
             title: r.title,
             duration: r.duration,
             cover_path: r.cover_path,
@@ -613,7 +625,7 @@ module CoreAsync
             begin_at: r.begin_at,
             end_at: r.end_at,
             album_uid: r.album_uid,
-            album_nickname: r.album_nickname,
+            #album_nickname: r.album_nickname,
             tags: r.tags,
             title: r.title,
             intro: r.intro ? r.intro[0, 255] : nil,
@@ -630,7 +642,7 @@ module CoreAsync
             end_at: r.end_at,
             position: r.position,
             track_uid: r.track_uid,
-            track_nickname: r.track_nickname,
+            #track_nickname: r.track_nickname,
             title: r.title,
             duration: r.duration,
             cover_path: r.cover_path,
@@ -661,7 +673,7 @@ module CoreAsync
             begin_at: r.begin_at,
             end_at: r.end_at,
             album_uid: r.album_uid,
-            album_nickname: r.album_nickname,
+            #album_nickname: r.album_nickname,
             tags: r.tags,
             title: r.title,
             intro: r.intro ? r.intro[0, 255] : nil,
@@ -679,7 +691,7 @@ module CoreAsync
             end_at: r.end_at,
             position: r.position,
             track_uid: r.track_uid,
-            track_nickname: r.track_nickname,
+            #track_nickname: r.track_nickname,
             title: r.title,
             duration: r.duration,
             cover_path: r.cover_path,

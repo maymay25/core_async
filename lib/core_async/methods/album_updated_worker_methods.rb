@@ -60,7 +60,7 @@ module CoreAsync
                   intro: track.intro,
                   is_deleted: track.is_deleted,
                   is_public: track.is_public,
-                  nickname: track.nickname,
+                  #nickname: user && user.nickname,
                   play_path: track.play_path,
                   play_path: track.play_path_64,
                   status: track.status,
@@ -102,7 +102,7 @@ module CoreAsync
           album_created_at: album.created_at,
           album_id: album.id,
           album_title: album.title,
-          nickname: album.nickname,
+          #nickname: user && user.nickname,
           uid: album.uid
         }
         if la
@@ -189,8 +189,8 @@ module CoreAsync
           album_id: last_tr.album_id,
           album_title: last_tr.album_title,
           is_resend: last_tr.op_type == 2,
-          is_v: user.isVerified,
-          nickname: last_tr.nickname,
+          #is_v: user && user.isVerified,
+          #nickname: user && user.nickname,
           track_cover_path: last_tr.cover_path,
           track_created_at: last_tr.created_at,
           track_id: last_tr.track_id,
@@ -345,7 +345,7 @@ module CoreAsync
             intro: album.intro,
             is_deleted: album.is_deleted,
             is_public: album.is_public,
-            nickname: album.nickname,
+            #nickname: user && user.nickname,
             status: album.status,
             album_created_at: album.created_at,
             uid: album.uid,

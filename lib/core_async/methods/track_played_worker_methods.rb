@@ -32,8 +32,8 @@ module CoreAsync
 
     def incr_album_plays(track_id)
       return if track_id.blank?
-      tir = TrackInRecord.fetch(track_id)
-      $counter_client.incr(Settings.counter.album.plays, tir.album_id, 1) if tir && tir.album_id
+      track = Track.fetch(track_id)
+      $counter_client.incr(Settings.counter.album.plays, track.album_id, 1) if track && track.album_id
     rescue Exception => e
       logger.error "incr_album_plays #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
