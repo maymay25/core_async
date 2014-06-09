@@ -81,10 +81,10 @@ module CoreAsync
           latest = LatestTrack.where(uid: track.uid).first
           hash = {
             album_id: track.album_id,
-            album_title: track.album_title,
+            album_title: album && album.title,
             is_resend: false,
             is_v: user.isVerified,
-            nickname: track.nickname,
+            nickname: user.nickname,
             track_cover_path: track.cover_path,
             track_created_at: track.created_at,
             track_id: track.id,
@@ -103,7 +103,7 @@ module CoreAsync
 
           ApprovingTrack.create(album_cover_path: track.album_cover_path,
             album_id: track.album_id,
-            album_title: track.album_title,
+            album_title: album && album.title,
             approve_group_id: uag ? uag.approve_group_id : nil,
             category_id: track.category_id,
             cover_path: track.cover_path,
