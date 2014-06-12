@@ -27,13 +27,13 @@ module CoreAsync
             last_tr = record
           end
           
-          if record.is_public && record.status == 1 && !record.is_deleted
+          #if record.is_public && record.status == 1 && !record.is_deleted
             # 用户声音数+
             #$counter_client.incr(Settings.counter.user.tracks, album.uid, 1)
 
             # 专辑声音数+
             #$counter_client.incr(Settings.counter.album.tracks, album.id, 1)
-          end
+          #end
 
           if record.op_type == 1
             track = Track.shard(record.track_id).where(id: record.track_id).first
@@ -50,27 +50,26 @@ module CoreAsync
               elsif track.status == 0
                 uag = UidApproveGroup.where(uid: track.uid).first
 
-                ApprovingTrack.create(album_cover_path: album.cover_path,
-                  album_title: album.title,
-                  album_id: track.album_id,
-                  approve_group_id: uag ? uag.approve_group_id : nil,
-                  category_id: track.category_id,
-                  cover_path: track.cover_path,
-                  duration: track.duration,
-                  intro: track.intro,
-                  is_deleted: track.is_deleted,
-                  is_public: track.is_public,
-                  #nickname: user && user.nickname,
-                  play_path: track.play_path,
-                  play_path: track.play_path_64,
-                  status: track.status,
-                  title: track.title,
-                  track_created_at: track.created_at,
+                ApprovingTrack.create(
                   track_id: track.id,
-                  transcode_state: track.transcode_state,
                   uid: track.uid,
-                  user_source: track.user_source,
-                  tags: track.tags
+                  # album_id: track.album_id,
+                  # approve_group_id: uag ? uag.approve_group_id : nil,
+                  # category_id: track.category_id,
+                  # cover_path: track.cover_path,
+                  # duration: track.duration,
+                  # intro: track.intro,
+                  # is_deleted: track.is_deleted,
+                  # is_public: track.is_public,
+                  #nickname: user && user.nickname,
+                  # play_path: track.play_path,
+                  # play_path: track.play_path_64,
+                  # status: track.status,
+                  # title: track.title,
+                  # track_created_at: track.created_at,
+                  # transcode_state: track.transcode_state,
+                  # user_source: track.user_source,
+                  # tags: track.tags
                 )
               end
             end
@@ -98,11 +97,7 @@ module CoreAsync
       if album.status == 1 && album.is_public && album.cover_path
         la = LatestAlbum.where(uid: album.uid).first
         hash = {
-          album_cover_path: album.cover_path,
-          album_created_at: album.created_at,
           album_id: album.id,
-          album_title: album.title,
-          #nickname: user && user.nickname,
           uid: album.uid
         }
         if la
@@ -174,31 +169,21 @@ module CoreAsync
 
       last_tr ||= TrackRecord.shard(album.uid).where(uid:album.uid,album_id:album.id,status:1,is_public:1,is_deleted:0).last
 
-      if last_tr
+      if last_tr and (last_track = Track.shard(last_tr.track_id).where(id:last_tr.track_id,uid:album.uid).first)
+        
         #logger.info("last_tr.track_id #{last_tr.track_id} album.last_uptrack_id #{album.last_uptrack_id}")
-        if last_tr.track_id != album.last_uptrack_id
+        if last_track.id != trackset.last_uptrack_id
           # 更新专辑的最后更新声音
-          album.update_attributes(last_uptrack_id: last_tr.track_id, last_uptrack_at: last_tr.created_at, last_uptrack_title: last_tr.title, last_uptrack_cover_path: last_tr.cover_path)
-          $rabbitmq_channel.queue('last_uptrack.rb', durable: true).publish(Hessian2.write({ album_id: album.id, last_uptrack_at: last_tr.created_at }), content_type: 'text/plain')
-          logger.info("publish last_uptrack.rb #{last_tr.created_at}")
+          trackset.update_attributes(last_uptrack_id: last_track.id, last_uptrack_at: last_track.created_at, last_uptrack_title: last_track.title, last_uptrack_cover_path: last_track.cover_path)
+          CoreAsync::SubappWorker.perform_async(:update_last_uptrack, trackset.id, last_track.created_at)
+          logger.info("subapp update_last_uptrack #{last_track.created_at}")
         end
         # 更新 用户最新发的声音
         user = $profile_client.queryUserBasicInfo(last_tr.uid)
         latest = LatestTrack.where(uid: last_tr.uid).first
         hash = {
-          album_id: last_tr.album_id,
-          album_title: last_tr.album_title,
-          is_resend: last_tr.op_type == 2,
-          #is_v: user && user.isVerified,
-          #nickname: user && user.nickname,
-          track_cover_path: last_tr.cover_path,
-          track_created_at: last_tr.created_at,
           track_id: last_tr.track_id,
-          track_title: last_tr.title,
-          
-          uid: last_tr.uid,
-          waveform: last_tr.waveform,
-          upload_id: last_tr.upload_id
+          uid: last_tr.uid
         }
         if latest
           latest.update_attributes(hash)
@@ -272,16 +257,17 @@ module CoreAsync
 
             # 老专辑
             if old_album_id
-              old = Album.shard(album.uid).where(id: old_album_id, uid: album.uid).first
+              old = TrackSet.shard(old_album_id).where(id: old_album_id, uid: album.uid).first
               if old
-                old.tracks_order = old.tracks_order.split(',').delete_if{ |id| id == record.id }.join(",") if old.tracks_order
+                old.records_order = old.records_order.split(',').delete_if{ |id| id == record.id }.join(",") if old.records_order
                 last = TrackRecord.shard(old.uid).where(uid: old.uid, album_id: old.id, is_deleted: false, status: 1, is_public: true).order('created_at desc').first
-                if last
-                  if last.track_id != old.last_uptrack_id
-                    old.last_uptrack_at = last.created_at
-                    old.last_uptrack_id = last.track_id
-                    old.last_uptrack_title = last.title
-                    old.last_uptrack_cover_path = last.cover_path
+                last_track = last && Track.shard(last.track_id).where(uid:old.uid,id:last.track_id).first
+                if last_track
+                  if last_track.id != old.last_uptrack_id
+                    old.last_uptrack_at = last_track.created_at
+                    old.last_uptrack_id = last_track.id
+                    old.last_uptrack_title = last_track.title
+                    old.last_uptrack_cover_path = last_track.cover_path
                   end
                 else
                   old.last_uptrack_at = nil
@@ -316,7 +302,7 @@ module CoreAsync
           # 用户的专辑数+ 
           #$counter_client.incr(Settings.counter.user.albums, album.uid, 1)
 
-          $rabbitmq_channel.fanout(Settings.topic.album.created, durable: true).publish(oj_dump(album.to_topic_hash.merge(user_agent: user_agent, ip: ip, is_feed: true)), content_type: 'text/plain', persistent: true)
+          $rabbitmq_channel.fanout(Settings.topic.album.created, durable: true).publish(oj_dump(trackset.to_topic_hash.merge(user_agent: user_agent, ip: ip, is_feed: true)), content_type: 'text/plain', persistent: true)
           logger.info "#{album.uid} #{Settings.topic.album.created} #{album.id}"
 
           if album.tags
@@ -354,7 +340,7 @@ module CoreAsync
           )
         end
       else # 更新专辑
-        $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(album.to_topic_hash.merge(ip: ip, has_new_track: passed_new_public_record_ids.size > 0)), content_type: 'text/plain', persistent: true)
+        $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(oj_dump(trackset.to_topic_hash.merge(ip: ip, has_new_track: passed_new_public_record_ids.size > 0)), content_type: 'text/plain', persistent: true)
         logger.info "#{album.uid} #{Settings.topic.album.updated} #{album.id}"
       end
 

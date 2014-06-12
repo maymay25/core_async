@@ -12,7 +12,8 @@ module CoreAsync
       comment = Comment.shard(track_id).where(id: comment_id).first
       comment_user = $profile_client.queryUserBasicInfo(comment.uid)
       track = Track.shard(comment.track_id).where(id: comment.track_id).first
-      
+      track_user = $profile_client.queryUserBasicInfo(track.uid)
+
       quan_ignores = [comment_user.nickname]
 
       if pid.to_s!=""
@@ -30,16 +31,16 @@ module CoreAsync
           track_title: track.title, 
           track_cover_path: track.cover_path,
           track_uid: track.uid, 
-          track_nickname: track.nickname, 
+          track_nickname: track_user.nickname, 
           comment_id: comment.id, 
           second: comment.second,
           pcomment_id: mid, 
           pcomment_content: pcomment.content[0..500],
           avatar_path: comment_user.logoPic,
+          to_avatar_path: pcomment_user.logoPic,
           extra_json: { track_id: track.id, track_title: track.title, track_cover_path: track.cover_path, 
-            track_uid: track.uid, track_nickname: track.nickname, comment_id: comment.id, second: comment.second, 
-            pcomment_id: mid, pcomment_content: pcomment.content[0, 100] }.to_json,
-          to_avatar_path: pcomment.avatar_path
+            track_uid: track.uid, track_nickname: track_user.nickname, comment_id: comment.id, second: comment.second, 
+            pcomment_id: mid, pcomment_content: pcomment.content[0, 100] }.to_json
         )
         if pcomment.uid != comment.uid
           ps = PersonalSetting.where(uid: pcomment.uid).first
@@ -51,9 +52,7 @@ module CoreAsync
 
        # 评论者不是声音发布者，且声音发布者不是父评论作者
       if comment.uid != track.uid and (pcomment_user.nil? or pcomment_user.uid != track.uid)
-        # 声音发布者 收件箱 收到一条评论我的
-        track_user = $profile_client.queryUserBasicInfo(track.uid)
-
+        dispatch_track_user = true
         Inbox.create(uid: comment.uid,
           nickname: comment_user.nickname,
           to_uid: track_user.uid,
@@ -64,13 +63,13 @@ module CoreAsync
           track_title: track.title, 
           track_cover_path: track.cover_path,
           track_uid: track.uid, 
-          track_nickname: track.nickname, 
+          track_nickname: track_user.nickname, 
           comment_id: comment.id, 
           second: comment.second,
           avatar_path: comment_user.logoPic,
-          extra_json: { track_id: track.id, track_title: track.title, track_cover_path: track.cover_path, 
-            track_uid: track.uid, track_nickname: track.nickname, comment_id: comment.id, second: comment.second }.to_json,
-          to_avatar_path: track.avatar_path
+          to_avatar_path: track_user.logoPic,
+          extra_json: { track_id: track.id, track_title: track.title, track_cover_path: track_user.logoPic, 
+            track_uid: track.uid, track_nickname: track_user.nickname, comment_id: comment.id, second: comment.second }.to_json
         )
         if track.uid != comment.uid
           track_ps = PersonalSetting.where(uid: track.uid).first
@@ -117,12 +116,12 @@ module CoreAsync
             track_title: track.title, 
             track_cover_path: track.cover_path,
             track_uid: track.uid, 
-            track_nickname: track.nickname, 
+            track_nickname: track_user.nickname, 
             comment_id: comment.id, 
             second: comment.second,
             extra_json: { 
               track_id: track.id, track_title: track.title, track_cover_path: track.cover_path, 
-              track_uid: track.uid, track_nickname: track.nickname, comment_id: comment.id, second: comment.second
+              track_uid: track.uid, track_nickname: track_user.nickname, comment_id: comment.id, second: comment.second
             }.to_json,
             avatar_path: comment_user.logoPic,
             to_avatar_path: u.middlePic
@@ -140,15 +139,33 @@ module CoreAsync
       end
 
       if pcomment_user
-        dispatch_comment(3, pcomment_user, comment)
+        dispatch_apn(pcomment_user.uid, {
+          type: 3,
+          to_uid: pcomment_user.uid,
+          to_nickname: pcomment_user.nickname,
+          id: comment.id,
+          track_id: comment.track_id,
+          content: comment.content,
+          from_uid: comment.uid,
+          from_nickname: comment_user.nickname
+        })
       end
 
       if track_user_dj
         $counter_client.incr(Settings.counter.user.new_comment, track_user_dj.uid, 1)
       end
 
-      if track_user
-        dispatch_comment(2, track_user, comment)
+      if dispatch_track_user
+        dispatch_apn(track_user.uid, {
+          type: 2,
+          to_uid: track_user.uid,
+          to_nickname: track_user.nickname,
+          id: comment.id,
+          track_id: comment.track_id,
+          content: comment.content,
+          from_uid: comment.uid,
+          from_nickname: comment_user.nickname
+        })
       end
 
       if refer_users_dj and refer_users_dj.size > 0
@@ -159,7 +176,18 @@ module CoreAsync
 
       if refer_users_push_dj and refer_users_push_dj.size > 0
         refer_users_push_dj.each_index do |index|
-          dispatch_comment(4, refer_users_push_dj[index], comment)
+          refer_user = refer_users_push_dj[index]
+          next if refer_user.nil?
+          dispatch_apn(refer_user.uid, {
+            type: 4,
+            to_uid: refer_user.uid,
+            to_nickname: refer_user.nickname,
+            id: comment.id,
+            track_id: comment.track_id,
+            content: comment.content,
+            from_uid: comment.uid,
+            from_nickname: comment_user.nickname
+          })
         end
       end
 
@@ -188,14 +216,10 @@ module CoreAsync
         ApprovingComment.create(comment_id: comment.id,
           approve_group_id: uag ? uag.approve_group_id : nil,
           uid: comment.uid,
-          nickname: comment.nickname,
           track_id: comment.track_id,
-          track_title: comment.track_title,
-          track_cover_path: comment.cover_path,
           second: comment.second,
           parent_id: comment.parent_id,
           content: comment.content,
-          upload_source: comment.upload_source,
           comment_created_at: comment.created_at
         )
       else
@@ -207,14 +231,10 @@ module CoreAsync
         ApprovingHighriskword.create(comment_id: comment.id,
           approve_group_id: uag ? uag.approve_group_id : nil,
           uid: comment.uid,
-          nickname: comment.nickname,
           track_id: comment.track_id,
-          track_title: comment.track_title,
-          track_cover_path: comment.cover_path,
           second: comment.second,
           parent_id: comment.parent_id,
           content: comment.content,
-          upload_source: comment.upload_source,
           comment_created_at: comment.created_at,
           high_risk_word: words.join(",")
         )

@@ -6,7 +6,20 @@ module CoreAsync
       method(action).call(*args)
     end
 
-    def following_destroyed(follow_id,uid,following_uid,is_auto_push,nickname,avatar_path,following_nickname,following_avatar_path)
+    def following_destroyed(follow_id,uid,following_uid,is_auto_push)
+
+     user = $profile_client.queryUserBasicInfo(uid)
+     following_user = $profile_client.queryUserBasicInfo(following_uid)
+
+     if user.nil?
+        logger.error "user with uid '#{uid}' not found"
+        return
+     end
+
+     if following_user.nil?
+        logger.error "user with uid '#{following_uid}' not found"
+        return
+     end
 
       old_group_ids = []
       old_group_ids << -1 if is_auto_push
@@ -23,10 +36,10 @@ module CoreAsync
         id: follow_id,
         uid: uid,
         following_uid: following_uid,
-        nickname: nickname,
-        avatar_path: avatar_path,
-        following_nickname: following_nickname,
-        following_avatar_path: following_avatar_path,
+        nickname: user.nickname,
+        avatar_path: user.logoPic,
+        following_nickname: following_user.nickname,
+        following_avatar_path: following_user.logoPic,
         created_at: Time.now
       }), content_type: 'text/plain', persistent: true)
 

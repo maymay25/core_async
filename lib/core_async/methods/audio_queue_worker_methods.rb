@@ -144,18 +144,8 @@ module CoreAsync
       # 更新用户最新声音
       latest = LatestTrack.where(uid: track.uid).first
       hash = {
-        album_id: track.album_id,
-        album_title: track.album_title,
-        is_resend: false,
-        is_v: user.isVerified,
-        nickname: track.nickname,
-        track_cover_path: track.cover_path,
-        track_created_at: track.created_at,
         track_id: track.id,
-        track_title: track.title,
-        uid: track.uid,
-        waveform: track.waveform,
-        upload_id: track.upload_id
+        uid: track.uid
       }
       if latest
         latest.update_attributes(hash)
@@ -165,27 +155,25 @@ module CoreAsync
 
       # 更新专辑最新声音
       if track.album_id
-        album = Album.stn(track.uid).where(id: track.album_id).first
-        if album
-          album.update_attributes(
+        trackset = TrackSet.stn(track.uid).where(id: track.album_id).first
+        if trackset
+          trackset.update_attributes(
             last_uptrack_at: track.created_at,
             last_uptrack_id: track.id,
             last_uptrack_title: track.title,
             last_uptrack_cover_path: track.cover_path
           )
 
-          $counter_client.incr(Settings.counter.album.tracks, album.id, 1)
-          $rabbitmq_channel.fanout(Settings.topic.album.updated, durable: true).publish(Oj.dump(album.to_topic_hash.merge(has_new_track: true), mode: :compat), content_type: 'text/plain', persistent: true)
+          $counter_client.incr(Settings.counter.trackset.tracks, trackset.id, 1)
+          $rabbitmq_channel.fanout(Settings.topic.trackset.updated, durable: true).publish(Oj.dump(trackset.to_topic_hash.merge(has_new_track: true), mode: :compat), content_type: 'text/plain', persistent: true)
           
           if is_shift_album
-            count = TrackRecord.stn(album.uid).where(status: 1, is_deleted: false, album_id: album.id).count
+            count = TrackRecord.stn(trackset.uid).where(status: 1, is_deleted: false, album_id: trackset.id).count
             if count > 200
               out = count - 200
               # 超出200个移出老声音
-              TrackRecord.stn(album.uid).where(status: 1, is_deleted: false, album_id: album.id).limit(out).each do |old_record|
+              TrackRecord.stn(trackset.uid).where(status: 1, is_deleted: false, album_id: trackset.id).limit(out).each do |old_record|
                 old_record.album_id = nil
-                old_record.album_title = nil
-                old_record.album_cover_path = nil
                 old_record.save
 
                 old_track = Track.stn(old_record.track_id).where(id: old_record.track_id).first
@@ -220,7 +208,9 @@ module CoreAsync
 
       # track origin
       trackhash = track.attributes
-      trackhash.delete_if{|k,v| %w(id created_at updated_at).include? k }
+      trackhash.delete('id')
+      trackhash.delete('created_at')
+      trackhash.delete('updated_at')
       track0 = TrackOrigin.where(id: track.id).first
       unless track0
         track0 = TrackOrigin.new

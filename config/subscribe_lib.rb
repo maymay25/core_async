@@ -215,7 +215,7 @@ def subscribe_following_destroyed_rb(channel)
     queue.subscribe do |metadata,payload|
       begin
         params = Oj.load(payload)
-        args = [ params['id'],params['uid'],params['following_uid'],params['is_auto_push'],params['nickname'],params['avatar_path'],params['following_nickname'],params['following_avatar_path'] ]
+        args = [ params['id'],params['uid'],params['following_uid'],params['is_auto_push'] ]
         CoreAsync::FollowingDestroyedWorker.perform_async(:following_destroyed,*args)
         
         logger.info "subscribe_following_destroyed_rb #{args.join(',')}"

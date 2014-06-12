@@ -43,6 +43,8 @@ RACK_ENV=development bundle exec thin start -p 9090
 ##  schedule ##
 RACK_ENV=development bundle exec clockwork ./config/sidekiq_schedule.rb
 
+## subscribe ##
+RACK_ENV=development bundle exec ruby config/sidekiq_subscribe.rb
 
 
 

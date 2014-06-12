@@ -14,6 +14,7 @@ module CoreAsync
       current_user = $profile_client.queryUserBasicInfo(uid)
       short_content = cut_str(content,60,'..')
       track = Track.shard(tid).where(id: tid).first
+      track_user = $profile_client.queryUserBasicInfo(track.uid)
 
       # 同时生成一条对原声音的评论 （如果有输入内容)
       if content.present?
@@ -21,22 +22,9 @@ module CoreAsync
         comment = Comment.create(uid: uid,
           track_id: track.id,
           track_uid: track.uid,
-          track_nickname: track.nickname,
-          track_title: track.title,
-          track_duration: track.duration,
-          track_created_at: track.created_at,
-          track_avatar_path: track.avatar_path,
           second: nil,
           parent_id: nil,
-          content: content,
-          nickname: current_user.nickname,
-          avatar_path: current_user.logoPic,
-          play_path: track.play_path,
-          play_path_32: track.play_path_32,
-          play_path_64: track.play_path_64,
-          play_path_128: track.play_path_128,
-          user_source: track.user_source,
-          cover_path: track.cover_path
+          content: content
         )
 
         relay_track_record = TrackRecord.shard(uid).where(id: record_id).first
@@ -48,22 +36,22 @@ module CoreAsync
         Outbox.create(uid: uid,
           nickname: current_user.nickname,
           to_uid: track.uid,
-          to_nickname: track.nickname,
+          to_nickname: track_user.nickname,
           message_type: 2,
           content: content,
           track_id: track.id, 
           track_title: track.title, 
           track_cover_path: track.cover_path, 
           track_uid: track.uid, 
-          track_nickname: track.nickname, 
+          track_nickname: track_user.nickname, 
           comment_id: comment.id, 
           second: nil,
-          extra_json: { 
+          extra_json: {
             track_id: track.id, track_title: track.title, track_cover_path: track.cover_path, 
-            track_uid: track.uid, track_nickname: track.nickname, comment_id: comment.id, second: nil
+            track_uid: track.uid, track_nickname: track_user.nickname, comment_id: comment.id, second: nil
           }.to_json,
           avatar_path: current_user.logoPic,
-          to_avatar_path: track.avatar_path
+          to_avatar_path: track_user.logoPic
         )
 
         # 圈到的
@@ -109,11 +97,11 @@ module CoreAsync
               track_title: track.title, 
               track_cover_path: track.cover_path, 
               track_uid: track.uid, 
-              track_nickname: track.nickname, 
+              track_nickname: track_user.nickname, 
               comment_id: comment.id, 
               second: comment.second,
               extra_json: { track_id: track.id, track_title: track.title, track_cover_path: track.cover_path, 
-                  track_uid: track.uid, track_nickname: track.nickname, comment_id: comment.id, second: comment.second }.to_json,
+                  track_uid: track.uid, track_nickname: track_user.nickname, comment_id: comment.id, second: comment.second }.to_json,
               avatar_path: current_user.logoPic,
               to_avatar_path: u.middlePic
             )
@@ -157,23 +145,23 @@ module CoreAsync
       unless ignored
         # 生成一条@原作者的转发消息
         Inbox.create(uid: uid,
-            nickname: current_user.nickname,
-            to_uid: track.uid,
-            to_nickname: track.nickname,
-            message_type: 8,
+          nickname: current_user.nickname,
+          to_uid: track.uid,
+          to_nickname: track_user.nickname,
+          message_type: 8,
           content: content,
           track_id: track.id, 
           track_title: track.title,
           track_cover_path: track.cover_path, 
           track_uid: track.uid, 
-          track_nickname: track.nickname, 
+          track_nickname: track_user.nickname, 
           comment_id: comment ? comment.id : nil,
           extra_json: {
             track_id: track.id, track_title: track.title, track_cover_path: track.cover_path, 
-            track_uid: track.uid, track_nickname: track.nickname, comment_id: comment ? comment.id : nil 
+            track_uid: track.uid, track_nickname: track_user.nickname, comment_id: comment ? comment.id : nil 
           }.to_json,
           avatar_path: current_user.logoPic,
-          to_avatar_path: track.avatar_path
+          to_avatar_path: track_user.logoPic
         )
         $counter_client.incr(Settings.counter.user.new_quan, track.uid, 1)
       end
@@ -181,18 +169,8 @@ module CoreAsync
       # 更新用户最新声音
       latest = LatestTrack.where(uid: uid).first
       hash = {
-        album_id: track.album_id,
-        album_title: track.album_title,
-        nickname: current_user.nickname,
-        is_resend: true,
-        is_v: current_user.isVerified,
-        track_cover_path: track.cover_path,
-        track_created_at: track.created_at,
         track_id: track.id,
-        track_title: track.title,
-        uid: uid,
-        waveform: track.waveform,
-        upload_id: track.upload_id
+        uid: uid
       }
       if latest
         latest.update_attributes(hash)

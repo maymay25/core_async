@@ -15,7 +15,7 @@ else
   end
 end
 
-require File.join(core_root, 'app/models/settings.rb')
+require File.join(core_root, 'config/settings.rb')
 
 #load lib
 $LOAD_PATH.unshift(File.expand_path("#{app_root}/lib",__FILE__))

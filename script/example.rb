@@ -8,3 +8,4 @@ require "#{app_root}/config/core_async_server.rb"
 
 #some custom code
 
+p ApprovingAlbum.first

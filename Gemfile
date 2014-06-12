@@ -17,7 +17,7 @@ gem 'sinatra-contrib'
 
 #gem 'timerizer'
 
-gem 'ting_model','0.3.3'
+gem 'ting_model','0.3.4'
 
 gem 'settingslogic'
 gem 'oj'

@@ -10,6 +10,7 @@ module CoreAsync
     end
 
     def track_on(track_id,is_new,options={})
+      share_opts, at_users = options['share_opts'], options['at_users']
       track = Track.shard(track_id).where(id: track_id).first
       user = $profile_client.queryUserBasicInfo(track.uid)
 
@@ -18,8 +19,8 @@ module CoreAsync
       update_track_origin(track,options[:ip])
 
       if is_new and track.status == 1 and track.is_public
-        thirdparty_share(options[:share_opts])
-        notify_users(track,options[:at_users])
+        thirdparty_share(share_opts)
+        notify_users(track,at_users)
       end
       
       user_tracks_count = $counter_client.get(Settings.counter.user.tracks, track.uid)
@@ -80,18 +81,8 @@ module CoreAsync
           # 更新用户最新声音
           latest = LatestTrack.where(uid: track.uid).first
           hash = {
-            album_id: track.album_id,
-            album_title: album && album.title,
-            is_resend: false,
-            is_v: user.isVerified,
-            nickname: user.nickname,
-            track_cover_path: track.cover_path,
-            track_created_at: track.created_at,
             track_id: track.id,
-            track_title: track.title,
             uid: track.uid,
-            waveform: track.waveform,
-            upload_id: track.upload_id
           }
           if latest
             latest.update_attributes(hash)
