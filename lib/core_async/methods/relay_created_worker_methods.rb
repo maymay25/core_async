@@ -27,8 +27,9 @@ module CoreAsync
           content: content
         )
 
-        relay_track_record = TrackRecord.shard(uid).where(id: record_id).first
-        relay_track_record.update_attributes(comment_content:short_content,comment_id:comment.id) if relay_track_record
+        track_repost = TrackRepost.shard(tid).where(uid:uid, id: record_id, is_deleted:false).first
+
+        track_repost.update_attributes(comment_content:short_content,comment_id:comment.id) if track_repost
         
         $counter_client.incr(Settings.counter.track.comments, track.id, 1)
 

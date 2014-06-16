@@ -220,7 +220,7 @@ module CoreAsync
       end
       track0.update_attributes(trackhash)
 
-      logger.info "audio_queue #{task_id} #{track.id} #{track.title} #{track.uid} #{track.nickname}"
+      logger.info "audio_queue #{task_id} #{track.id} #{track.title} #{track.uid} #{user.nickname}"
     rescue Exception => e
       logger.error "audio_queue #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e

@@ -14,6 +14,7 @@ module CoreAsync
       user = $profile_client.queryUserBasicInfo(fav.uid)
 
       track = Track.shard(fav.track_id).where(id: fav.track_id).first
+      track_user = $profile_client.queryUserBasicInfo(track.uid)
 
       # 喜欢通知
       return if fav.uid == track.uid
@@ -22,7 +23,7 @@ module CoreAsync
         Inbox.create(uid: fav.uid,
           nickname: user.nickname,
           to_uid: track.uid,
-          to_nickname: track.nickname,
+          to_nickname: track_user.nickname,
           message_type: 7,
           content: track.id.to_s,
           avatar_path: user.logoPic,
@@ -30,9 +31,9 @@ module CoreAsync
           track_title: track.title, 
           track_cover_path: track.cover_path, 
           track_uid: track.uid, 
-          track_nickname: track.nickname, 
+          track_nickname: track_user.nickname, 
           avatar_path: user.logoPic,
-          to_avatar_path: track.avatar_path,
+          to_avatar_path: track_user.logoPic,
           upload_source: upload_source
         )
 

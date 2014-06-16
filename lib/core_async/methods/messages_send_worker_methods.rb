@@ -26,6 +26,8 @@ module CoreAsync
           followers = Follower.shard(zhubo.uid).where(following_uid: zhubo.uid).offset(offset).limit(loop_size)
           break if followers.blank?
           followers.each do |follower|
+            follower_user = $profile_client.queryUserBasicInfo(follower.uid)
+            next if follower_user.nil?
             linkman = Linkman.shard(follower.uid).where(uid: follower.uid, linkman_uid: zhubo.uid).first
             if linkman
               linkman.no_read_count = linkman.no_read_count + 1
@@ -34,8 +36,8 @@ module CoreAsync
               linkman.save
             else
               Linkman.create(uid: follower.uid, 
-                nickname: follower.nickname,
-                avatar_path: follower.avatar_path,
+                nickname: follower_user.nickname,
+                avatar_path: follower_user.logoPic,
                 linkman_uid: zhubo.uid,
                 linkman_nickname: zhubo.nickname,
                 linkman_avatar_path: zhubo.logoPic,
@@ -46,8 +48,8 @@ module CoreAsync
             end
 
             Chat.create(uid: follower.uid,
-              nickname: follower.nickname,
-              avatar_path: follower.avatar_path,
+              nickname: follower_user.nickname,
+              avatar_path: follower_user.logoPic,
               with_uid: zhubo.uid,
               with_nickname: zhubo.nickname,
               with_avatar_path: zhubo.logoPic,
@@ -158,8 +160,6 @@ module CoreAsync
       logger.error "messages_send #{e.class}: #{e.message} \n #{e.backtrace.join("\n")}"
       raise e
     end
-
-
 
     private
 

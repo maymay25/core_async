@@ -19,18 +19,22 @@ module CoreAsync
         xml << "\n<headurl>#{picture_url('user', user.logoPic, 'origin')}</headurl>"
         xml << "\n<link>http://www.ximalaya.com/#{uid}</link>"
         xml << "\n<tracks>"
-        TrackRecord.shard(uid).where(uid: uid, is_deleted: false, is_public: true, status: 1).order('created_at desc').limit(10).each do |record|
-          url = file_url(record.play_path_64)
-          albumurl = "http://www.ximalaya.com/#{record.track_uid}/album/#{record.album_id}" if record.album_id
+        records = TrackRecord.shard(uid).where(uid: uid, is_deleted: false, is_public: true, status: 1).order('id desc').limit(10)
+        track_ids = records.map(&:track_id)
+        tracks = Track.mfetch(track_ids,true)
+        tracks.each do |track|
+          trackset = track.album_id && TrackSet.fetch(track.album_id)
+          url = file_url(track.play_path_64)
+          albumurl = "http://www.ximalaya.com/#{track.uid}/album/#{track.album_id}" if track.album_id
           xml << "\n<track>"
-          xml << "\n<album>#{CGI.escapeHTML(record.album_title) if record.album_title}</album>"
+          xml << "\n<album>#{CGI.escapeHTML(trackset.title) if trackset}</album>"
           xml << "\n<albumurl>#{albumurl}</albumurl>"
-          xml << "\n<title>#{CGI.escapeHTML(record.title) if record.title}</title>"
-          xml << "\n<summary>#{CGI.escapeHTML(record.intro) if record.intro}</summary>"
-          xml << "\n<image>#{picture_url('track', record.cover_path, 'origin')}</image>"
-          xml << "\n<url>http://www.ximalaya.com/jt.mp3?channel=neteasenews&amp;album_id=#{record.album_id}&amp;track_id=#{record.track_id}&amp;uid=#{record.uid}&amp;jt=#{url}\</url>"
-          xml << "\n<pubdate>#{record.created_at.strftime('%a, %e %b %Y %T %z')}</pubdate>"
-          xml << "\n<duration>#{parse_duration(record.duration)}</duration>"
+          xml << "\n<title>#{CGI.escapeHTML(track.title) if track.title}</title>"
+          xml << "\n<summary>#{CGI.escapeHTML(track.intro) if track.intro}</summary>"
+          xml << "\n<image>#{picture_url('track', track.cover_path, 'origin')}</image>"
+          xml << "\n<url>http://www.ximalaya.com/jt.mp3?channel=neteasenews&amp;album_id=#{track.album_id}&amp;track_id=#{track.id}&amp;uid=#{track.uid}&amp;jt=#{url}\</url>"
+          xml << "\n<pubdate>#{track.created_at.strftime('%a, %e %b %Y %T %z')}</pubdate>"
+          xml << "\n<duration>#{parse_duration(track.duration)}</duration>"
           xml << "\n</track>"
         end
         xml << "\n</tracks>"
@@ -58,20 +62,24 @@ module CoreAsync
       xml << "<description>喜马拉雅 听我想听</description>"
 
       Settings.neteasenews_uids.each do |uid|
-        TrackRecord.shard(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1 and created_at > ?', uid, now - 604800).order('created_at desc').limit(10).each do |record|
-          url = file_url(record.play_path_64)
-          jt_path = "/jt.mp3?channel=sohunews&amp;album_id=#{record.album_id}&amp;track_id=#{record.track_id}&amp;uid=#{record.uid}&amp;jt=#{url}"
+        records = TrackRecord.shard(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1 and created_at > ?', uid, now - 604800).order('id desc').limit(10)
+        track_ids = records.map(&:track_id)
+        tracks = Track.mfetch(track_ids,true)
+        tracks.each do |track|
+          trackset = track.album_id && TrackSet.fetch(track.album_id)
+          url = file_url(track.play_path_64)
+          jt_path = "/jt.mp3?channel=sohunews&amp;album_id=#{track.album_id}&amp;track_id=#{track.id}&amp;uid=#{track.uid}&amp;jt=#{url}"
           xml << "\n<item>"
-          xml << "\n<title>#{CGI.escapeHTML(record.title) if record.title}</title>"
-          xml << "\n<enclosure url=\"#{File.join(Settings.home_root, jt_path)}\" type=\"text/html\" length=\"#{record.mp3size_64}\" />"
-          xml << "\n<link>#{[ Settings.home_root, record.track_uid, 'sound', record.track_id ].join('/')}</link>"
-          xml << "\n<description>#{CGI.escapeHTML(record.intro) if record.intro}</description>"
-          xml << "\n<itunes:author>#{CGI.escapeHTML(record.nickname) if record.nickname}</itunes:author>"
-          xml << "\n<itunes:image href=\"#{picture_url('track', record.cover_path, 'origin')}\" />"
-          xml << "\n<pubDate>#{record.created_at.strftime('%a, %e %b %Y %T %z')}</pubDate>"
+          xml << "\n<title>#{CGI.escapeHTML(track.title) if track.title}</title>"
+          xml << "\n<enclosure url=\"#{File.join(Settings.home_root, jt_path)}\" type=\"text/html\" length=\"#{track.mp3size_64}\" />"
+          xml << "\n<link>#{[ Settings.home_root, track.uid, 'sound', track.id ].join('/')}</link>"
+          xml << "\n<description>#{CGI.escapeHTML(track.intro) if track.intro}</description>"
+          xml << "\n<itunes:author>#{CGI.escapeHTML(track.nickname) if track.nickname}</itunes:author>"
+          xml << "\n<itunes:image href=\"#{picture_url('track', track.cover_path, 'origin')}\" />"
+          xml << "\n<pubDate>#{track.created_at.strftime('%a, %e %b %Y %T %z')}</pubDate>"
           xml << "\n<guid>#{url}</guid>"
-          xml << "\n<itunes:duration>#{parse_duration(record.duration)}</itunes:duration>"
-          xml << "\n<itunes:subtitle>#{CGI.escapeHTML(record.album_title) if record.album_title}</itunes:subtitle>"
+          xml << "\n<itunes:duration>#{parse_duration(track.duration)}</itunes:duration>"
+          xml << "\n<itunes:subtitle>#{CGI.escapeHTML(trackset.title) if trackset}</itunes:subtitle>"
           xml << "\n</item>"
         end
       end
@@ -96,20 +104,24 @@ module CoreAsync
 
       # 糗事百科，段子来了
       [ 1000596, 2629294 ].each do |uid|
-        TrackRecord.shard(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1', uid).order('created_at desc').each do |record|
-          url = file_url(record.play_path_64)
-          jt_path = "/jt.mp3?channel=hnxxt&amp;album_id=#{record.album_id}&amp;track_id=#{record.track_id}&amp;uid=#{record.uid}&amp;jt=#{url}"
+        records = TrackRecord.shard(uid).where('uid = ? and status = 1 and is_deleted = 0 and is_public = 1', uid).order('id desc')
+        track_ids = records.map(&:track_id)
+        tracks = Track.mfetch(track_ids,true)
+        tracks.each do |track|
+          trackset = track.album_id && TrackSet.fetch(track.album_id)
+          url = file_url(track.play_path_64)
+          jt_path = "/jt.mp3?channel=hnxxt&amp;album_id=#{track.album_id}&amp;track_id=#{track.id}&amp;uid=#{track.uid}&amp;jt=#{url}"
           xml << "\n<item>"
-          xml << "\n<title>#{CGI.escapeHTML(record.title) if record.title}</title>"
-          xml << "\n<enclosure url=\"#{File.join(Settings.home_root, jt_path)}\" type=\"text/html\" length=\"#{record.mp3size_64}\" />"
-          xml << "\n<link>#{[ Settings.home_root, record.track_uid, 'sound', record.track_id ].join('/')}</link>"
-          xml << "\n<description>#{CGI.escapeHTML(record.intro) if record.intro}</description>"
-          xml << "\n<itunes:author>#{CGI.escapeHTML(record.nickname) if record.nickname}</itunes:author>"
-          xml << "\n<itunes:image href=\"#{picture_url('track', record.cover_path, 'origin')}\" />"
-          xml << "\n<pubDate>#{record.created_at.strftime('%a, %e %b %Y %T %z')}</pubDate>"
+          xml << "\n<title>#{CGI.escapeHTML(track.title) if track.title}</title>"
+          xml << "\n<enclosure url=\"#{File.join(Settings.home_root, jt_path)}\" type=\"text/html\" length=\"#{track.mp3size_64}\" />"
+          xml << "\n<link>#{[ Settings.home_root, track.uid, 'sound', track.id ].join('/')}</link>"
+          xml << "\n<description>#{CGI.escapeHTML(track.intro) if track.intro}</description>"
+          xml << "\n<itunes:author>#{CGI.escapeHTML(track.nickname) if track.nickname}</itunes:author>"
+          xml << "\n<itunes:image href=\"#{picture_url('track', track.cover_path, 'origin')}\" />"
+          xml << "\n<pubDate>#{track.created_at.strftime('%a, %e %b %Y %T %z')}</pubDate>"
           xml << "\n<guid>#{url}</guid>"
-          xml << "\n<itunes:duration>#{parse_duration(record.duration)}</itunes:duration>"
-          xml << "\n<itunes:subtitle>#{CGI.escapeHTML(record.album_title) if record.album_title}</itunes:subtitle>"
+          xml << "\n<itunes:duration>#{parse_duration(track.duration)}</itunes:duration>"
+          xml << "\n<itunes:subtitle>#{CGI.escapeHTML(trackset.title) if trackset}</itunes:subtitle>"
           xml << "\n</item>"
         end
       end
@@ -626,20 +638,24 @@ module CoreAsync
 
           [ 225840, 1873479 ] 
       ].each do |album_id, uid|
-        TrackRecord.shard(uid).where('uid = ? and album_id = ? and created_at > ? and is_deleted = 0', uid, album_id, now - 2592000).order('created_at desc').each do |record|
-          url = file_url(record.play_path_64)
-          jt_path = "/jt.mp3?channel=hnsjt&amp;album_id=#{record.album_id}&amp;track_id=#{record.track_id}&amp;uid=#{record.uid}&amp;jt=#{url}"
+        records = TrackRecord.shard(uid).where('uid = ? and album_id = ? and created_at > ? and is_deleted = 0', uid, album_id, now - 2592000).order('id desc')
+        track_ids = records.map(&:track_id)
+        tracks = Track.mfetch(track_ids,true)
+        tracks.each do |track|
+          trackset = track.album_id && TrackSet.fetch(track.album_id)
+          url = file_url(track.play_path_64)
+          jt_path = "/jt.mp3?channel=hnsjt&amp;album_id=#{track.album_id}&amp;track_id=#{track.id}&amp;uid=#{track.uid}&amp;jt=#{url}"
           xml << "\n<item>"
-          xml << "\n<title>#{CGI.escapeHTML(record.title) if record.title}</title>"
-          xml << "\n<enclosure url=\"#{File.join(Settings.home_root, jt_path)}\" type=\"text/html\" length=\"#{record.mp3size_64}\" />"
-          xml << "\n<link>#{[ Settings.home_root, record.track_uid, 'sound', record.track_id ].join('/')}</link>"
-          xml << "\n<description>#{CGI.escapeHTML(record.intro) if record.intro}</description>"
-          xml << "\n<itunes:author>#{CGI.escapeHTML(record.nickname) if record.nickname}</itunes:author>"
-          xml << "\n<itunes:image href=\"#{picture_url('track', record.cover_path, 'origin')}\" />"
-          xml << "\n<pubDate>#{record.created_at.strftime('%a, %e %b %Y %T %z')}</pubDate>"
+          xml << "\n<title>#{CGI.escapeHTML(track.title) if track.title}</title>"
+          xml << "\n<enclosure url=\"#{File.join(Settings.home_root, jt_path)}\" type=\"text/html\" length=\"#{track.mp3size_64}\" />"
+          xml << "\n<link>#{[ Settings.home_root, track.uid, 'sound', track.id ].join('/')}</link>"
+          xml << "\n<description>#{CGI.escapeHTML(track.intro) if track.intro}</description>"
+          xml << "\n<itunes:author>#{CGI.escapeHTML(track.nickname) if track.nickname}</itunes:author>"
+          xml << "\n<itunes:image href=\"#{picture_url('track', track.cover_path, 'origin')}\" />"
+          xml << "\n<pubDate>#{track.created_at.strftime('%a, %e %b %Y %T %z')}</pubDate>"
           xml << "\n<guid>#{url}</guid>"
-          xml << "\n<itunes:duration>#{parse_duration(record.duration)}</itunes:duration>"
-          xml << "\n<itunes:subtitle>#{CGI.escapeHTML(record.album_title) if record.album_title}</itunes:subtitle>"
+          xml << "\n<itunes:duration>#{parse_duration(track.duration)}</itunes:duration>"
+          xml << "\n<itunes:subtitle>#{CGI.escapeHTML(trackset.title) if trackset}</itunes:subtitle>"
           xml << "\n</item>"
         end
       end

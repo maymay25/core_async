@@ -61,7 +61,7 @@ module CoreAsync
                   # intro: track.intro,
                   # is_deleted: track.is_deleted,
                   # is_public: track.is_public,
-                  #nickname: user && user.nickname,
+                  # nickname: user && user.nickname,
                   # play_path: track.play_path,
                   # play_path: track.play_path_64,
                   # status: track.status,
