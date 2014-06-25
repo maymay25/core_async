@@ -1,0 +1,87 @@
+# Logfile created on 2014-06-12 14:58:50 +0800 by logger.rb/41954
+I, [2014-06-12T14:58:50.579080 #9636]  INFO -- : subscribe_track_played 217133,18
+I, [2014-06-12T14:58:50.590081 #9636]  INFO -- : subscribe_track_played 217133,18
+I, [2014-06-12T14:58:50.600082 #9636]  INFO -- : subscribe_track_played 217133,18
+I, [2014-06-12T14:58:50.610083 #9636]  INFO -- : subscribe_track_played 217133,18
+I, [2014-06-12T14:58:50.620084 #9636]  INFO -- : subscribe_track_played 217405,18
+I, [2014-06-12T14:58:50.630085 #9636]  INFO -- : subscribe_track_played 217403,18
+I, [2014-06-12T14:58:50.640086 #9636]  INFO -- : subscribe_track_played 217405,18
+I, [2014-06-12T14:58:50.650087 #9636]  INFO -- : subscribe_track_played 217403,18
+I, [2014-06-12T14:58:50.660088 #9636]  INFO -- : subscribe_track_played 217220,18
+I, [2014-06-12T14:58:50.670089 #9636]  INFO -- : subscribe_track_played 217223,18
+I, [2014-06-12T14:58:50.680090 #9636]  INFO -- : subscribe_track_played 217220,18
+I, [2014-06-12T14:58:50.690091 #9636]  INFO -- : subscribe_track_played 217223,18
+I, [2014-06-12T14:58:50.700092 #9636]  INFO -- : subscribe_track_played 216994,18
+I, [2014-06-12T14:58:50.711093 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217133,18
+I, [2014-06-12T14:58:50.721094 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217133,18
+I, [2014-06-12T14:58:50.731095 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217133,18
+I, [2014-06-12T14:58:50.741096 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217133,18
+I, [2014-06-12T14:58:50.751097 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217405,18
+I, [2014-06-12T14:58:50.761098 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217403,18
+I, [2014-06-12T14:58:50.771099 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217405,18
+I, [2014-06-12T14:58:50.781100 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217403,18
+I, [2014-06-12T14:58:50.791101 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217220,18
+I, [2014-06-12T14:58:50.801102 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217223,18
+I, [2014-06-12T14:58:50.811103 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217220,18
+I, [2014-06-12T14:58:50.821104 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217223,18
+I, [2014-06-12T14:58:50.831105 #9636]  INFO -- : subscribe_incr_album_plays_track_played 216994,18
+I, [2014-06-12T14:58:50.841106 #9636]  INFO -- : subscribe_track_off 188227,true
+I, [2014-06-12T14:58:50.861108 #9636]  INFO -- : subscribe_track_off 191596,true
+I, [2014-06-12T14:58:50.871109 #9636]  INFO -- : subscribe_track_off 191596,false
+I, [2014-06-12T14:58:50.881110 #9636]  INFO -- : subscribe_track_off 191596,false
+I, [2014-06-12T14:58:50.891111 #9636]  INFO -- : subscribe_track_off 191596,false
+I, [2014-06-12T14:58:50.901112 #9636]  INFO -- : subscribe_track_off 191596,false
+I, [2014-06-12T14:58:50.911113 #9636]  INFO -- : subscribe_track_off 217133,true
+I, [2014-06-12T14:58:50.921114 #9636]  INFO -- : subscribe_track_off 217117,true
+I, [2014-06-12T14:58:50.931115 #9636]  INFO -- : subscribe_track_off 211132,true
+I, [2014-06-12T14:58:50.942116 #9636]  INFO -- : subscribe_track_off 216988,true
+I, [2014-06-12T14:58:50.953117 #9636]  INFO -- : subscribe_track_off 217082,true
+I, [2014-06-12T14:58:50.963118 #9636]  INFO -- : subscribe_track_off 217221,true
+I, [2014-06-12T14:58:50.974119 #9636]  INFO -- : subscribe_track_off 217054,true
+I, [2014-06-12T14:58:50.984120 #9636]  INFO -- : subscribe_track_off 217055,true
+I, [2014-06-12T14:58:50.994121 #9636]  INFO -- : subscribe_track_off 217056,true
+I, [2014-06-12T14:58:51.005122 #9636]  INFO -- : subscribe_track_off 217057,true
+I, [2014-06-12T14:58:51.016123 #9636]  INFO -- : subscribe_track_off 217058,true
+I, [2014-06-12T14:58:51.026124 #9636]  INFO -- : subscribe_track_off 217059,true
+I, [2014-06-12T14:58:51.037125 #9636]  INFO -- : subscribe_track_off 217060,true
+I, [2014-06-12T14:58:51.047126 #9636]  INFO -- : subscribe_album_resend [],13105
+I, [2014-06-12T14:59:41.616183 #9636]  INFO -- : subscribe_track_played 202410,18
+I, [2014-06-12T14:59:41.626184 #9636]  INFO -- : subscribe_incr_album_plays_track_played 202410,18
+I, [2014-06-12T14:59:42.641285 #9636]  INFO -- : subscribe_track_played 217403,18
+I, [2014-06-12T14:59:42.652286 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217403,18
+I, [2014-06-12T15:17:18.141825 #9636]  INFO -- : subscribe_track_played 217220,18
+I, [2014-06-12T15:17:18.152826 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217220,18
+I, [2014-06-12T15:31:44.161418 #9636]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-12T15:42:03.967392 #9636]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-12T15:42:35.936589 #9636]  INFO -- : subscribe_track_played 164050,18
+I, [2014-06-12T15:42:35.947590 #9636]  INFO -- : subscribe_incr_album_plays_track_played 164050,18
+I, [2014-06-12T15:42:40.688064 #9636]  INFO -- : subscribe_track_played 164049,18
+I, [2014-06-12T15:42:40.698065 #9636]  INFO -- : subscribe_incr_album_plays_track_played 164049,18
+I, [2014-06-12T15:42:41.918187 #9636]  INFO -- : subscribe_track_played 153099,18
+I, [2014-06-12T15:42:41.929188 #9636]  INFO -- : subscribe_incr_album_plays_track_played 153099,18
+I, [2014-06-12T15:48:11.034095 #9636]  INFO -- : subscribe_track_played 202410,18
+I, [2014-06-12T15:48:11.044096 #9636]  INFO -- : subscribe_incr_album_plays_track_played 202410,18
+I, [2014-06-12T15:48:15.461538 #9636]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-12T15:48:23.436336 #9636]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-12T15:52:23.402511 #9636]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-12T15:53:44.117650 #9636]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-12T15:53:57.027232 #9636]  INFO -- : subscribe_track_played 210500,18
+I, [2014-06-12T15:53:57.044235 #9636]  INFO -- : subscribe_incr_album_plays_track_played 210500,18
+I, [2014-06-12T15:54:19.366699 #9636]  INFO -- : subscribe_track_played 191591,18
+I, [2014-06-12T15:54:19.376701 #9636]  INFO -- : subscribe_incr_album_plays_track_played 191591,18
+I, [2014-06-12T16:14:39.937965 #9636]  INFO -- : subscribe_track_off 217114,true
+I, [2014-06-12T16:15:00.065978 #9636]  INFO -- : subscribe_album_off 79799,true,1
+I, [2014-06-12T16:15:00.516023 #9636]  INFO -- : subscribe_track_off 217403,true
+I, [2014-06-12T16:15:08.719843 #9636]  INFO -- : subscribe_track_off 217219,true
+I, [2014-06-12T16:15:08.729844 #9636]  INFO -- : subscribe_track_off 217222,true
+I, [2014-06-12T16:15:08.740845 #9636]  INFO -- : subscribe_track_off 217223,true
+I, [2014-06-12T17:50:54.167316 #9636]  INFO -- : subscribe_track_played 217405,18
+I, [2014-06-12T17:50:54.226322 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217405,18
+I, [2014-06-12T17:52:25.589458 #9636]  INFO -- : subscribe_track_played 217804,18
+I, [2014-06-12T17:52:25.613460 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217804,18
+I, [2014-06-12T17:54:47.862684 #9636]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-12T17:54:56.018499 #9636]  INFO -- : subscribe_track_played 217405,18
+I, [2014-06-12T17:54:56.042501 #9636]  INFO -- : subscribe_incr_album_plays_track_played 217405,18
+I, [2014-06-12T18:03:55.761468 #9636]  INFO -- : subscribe_album_off 78540,true,2
+I, [2014-06-12T18:04:32.386130 #9636]  INFO -- : subscribe_album_off 79847,true,2
+I, [2014-06-12T18:05:31.141005 #9636]  INFO -- : subscribe_album_off 78771,true,2

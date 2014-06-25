@@ -1,0 +1,8 @@
+# Logfile created on 2014-06-16 10:53:35 +0800 by logger.rb/41954
+I, [2014-06-16T10:53:35.327164 #7464]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-16T15:24:21.082013 #7068]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-16T16:00:25.590001 #7068]  INFO -- : subscribe_following_created  ,,   | length=1
+I, [2014-06-16T17:12:40.560988 #7068]  INFO -- : subscribe_track_played 210961,18
+I, [2014-06-16T17:12:40.588988 #7068]  INFO -- : subscribe_incr_album_plays_track_played 210961,18
+I, [2014-06-16T17:12:47.387988 #7068]  INFO -- : subscribe_track_played 211205,18
+I, [2014-06-16T17:12:47.422988 #7068]  INFO -- : subscribe_incr_album_plays_track_played 211205,18

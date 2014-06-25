@@ -1,0 +1,8 @@
+# Logfile created on 2014-06-12 15:31:44 +0800 by logger.rb/41954
+I, [2014-06-12T15:31:44.315433 #4716]  INFO -- : following_created 18 [12592]
+I, [2014-06-12T15:42:04.092405 #9064]  INFO -- : following_created 18 [3076]
+I, [2014-06-12T15:48:15.508543 #9064]  INFO -- : following_created 18 [12592]
+I, [2014-06-12T15:48:23.495341 #9064]  INFO -- : following_created 18 [12329]
+I, [2014-06-12T15:52:23.452521 #9064]  INFO -- : following_created 18 [12592]
+I, [2014-06-12T15:53:44.192665 #9064]  INFO -- : following_created 18 [3440]
+I, [2014-06-12T17:54:48.149712 #10848]  INFO -- : following_created 18 [12945]

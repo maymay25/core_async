@@ -1,0 +1,8 @@
+# Logfile created on 2014-06-12 15:41:57 +0800 by logger.rb/41954
+I, [2014-06-12T15:41:57.599756 #9064]  INFO -- : following_destroyed 18 unfollow 2221
+I, [2014-06-12T15:42:00.672063 #9064]  INFO -- : following_destroyed 18 unfollow 2254
+I, [2014-06-12T15:48:14.256418 #9064]  INFO -- : following_destroyed 18 unfollow 12592
+I, [2014-06-12T15:49:00.920084 #9064]  INFO -- : following_destroyed 18 unfollow 12592
+I, [2014-06-12T15:49:01.740166 #9064]  INFO -- : following_destroyed 18 unfollow 12329
+I, [2014-06-12T17:54:43.267224 #10848]  INFO -- : following_destroyed 18 unfollow 3384
+I, [2014-06-12T17:54:45.030400 #10848]  INFO -- : following_destroyed 18 unfollow 12859

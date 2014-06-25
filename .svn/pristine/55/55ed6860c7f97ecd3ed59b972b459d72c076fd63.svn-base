@@ -1,0 +1,67 @@
+# Logfile created on 2014-06-11 15:11:39 +0800 by logger.rb/41954
+I, [2014-06-11T15:11:39.948416 #5860]  INFO -- : move record 219483 from album 78682
+I, [2014-06-11T15:11:43.427764 #5860]  INFO -- : 18 album.updated.topic old 78682
+I, [2014-06-11T15:11:43.437765 #5860]  INFO -- : 让我一次爱个够 album.plays.count - 4
+I, [2014-06-11T15:11:43.447766 #5860]  INFO -- : 18 album.updated.topic 78682
+I, [2014-06-11T15:11:43.674789 #5860]  INFO -- : 18 让我一次爱个够 []
+I, [2014-06-11T15:13:39.167337 #5860]  INFO -- : move record 219483 from album 78682
+I, [2014-06-11T15:13:39.229343 #5860]  INFO -- : 18 album.updated.topic old 78682
+I, [2014-06-11T15:13:39.239344 #5860]  INFO -- : 让我一次爱个够 album.plays.count - 4
+I, [2014-06-11T15:13:39.249345 #5860]  INFO -- : 18 album.updated.topic 78682
+I, [2014-06-11T15:13:39.299350 #5860]  INFO -- : 18 让我一次爱个够 []
+I, [2014-06-11T15:22:58.159230 #5860]  INFO -- : move record 219483 from album 78682
+I, [2014-06-11T15:22:58.218236 #5860]  INFO -- : 18 album.updated.topic old 78682
+I, [2014-06-11T15:22:58.229237 #5860]  INFO -- : 让我一次爱个够 album.plays.count - 4
+I, [2014-06-11T15:22:58.239238 #5860]  INFO -- : 18 album.updated.topic 78682
+I, [2014-06-11T15:22:58.292244 #5860]  INFO -- : 18 让我一次爱个够 []
+I, [2014-06-11T15:41:45.479951 #5860]  INFO -- : 18 album.updated.topic 78682
+I, [2014-06-11T15:41:45.521955 #5860]  INFO -- : 18 让我一次爱个够 []
+I, [2014-06-11T15:47:48.440244 #5860]  INFO -- : move record 219403 from album nil
+I, [2014-06-11T15:47:48.611261 #5860]  INFO -- : move record 213213 from album nil
+I, [2014-06-11T15:47:48.737273 #5860]  INFO -- : move record 219300 from album nil
+I, [2014-06-11T15:47:48.826282 #5860]  INFO -- : 18 album.updated.topic 78682
+I, [2014-06-11T15:47:48.886288 #5860]  INFO -- : 18 让我俩次爱个够 []
+I, [2014-06-11T16:43:51.649526 #5860]  INFO -- : 18 album.created.topic 79838
+I, [2014-06-11T16:43:52.357597 #5860]  INFO -- : 18 与图片无法  []
+I, [2014-06-11T17:43:14.644790 #5860]  INFO -- : subapp update_last_uptrack 2014-06-11 15:12:59 +0800
+I, [2014-06-11T17:43:14.662792 #5860]  INFO -- : move record 219571 from album 79838
+I, [2014-06-11T17:43:14.807806 #5860]  INFO -- : 18 album.updated.topic old 79838
+I, [2014-06-11T17:43:14.818808 #5860]  INFO -- : 18 album.updated.topic 78642
+I, [2014-06-11T17:43:14.880814 #5860]  INFO -- : 18 是的 []
+I, [2014-06-11T17:43:19.665292 #5860]  INFO -- : subapp update_last_uptrack 2014-06-11 15:12:59 +0800
+I, [2014-06-11T17:43:19.738299 #5860]  INFO -- : move record 219571 from album 78642
+I, [2014-06-11T17:43:19.835309 #5860]  INFO -- : 18 album.updated.topic old 78642
+I, [2014-06-11T17:43:19.846310 #5860]  INFO -- : 18 album.updated.topic 77367
+I, [2014-06-11T17:43:19.899316 #5860]  INFO -- : 18 空专辑 []
+I, [2014-06-11T17:43:25.008826 #5860]  INFO -- : subapp update_last_uptrack 2014-06-11 15:12:59 +0800
+I, [2014-06-11T17:43:25.072833 #5860]  INFO -- : move record 219571 from album 77367
+I, [2014-06-11T17:43:25.135839 #5860]  INFO -- : 18 album.updated.topic old 77367
+I, [2014-06-11T17:43:25.145840 #5860]  INFO -- : 18 album.updated.topic 78540
+I, [2014-06-11T17:43:25.186844 #5860]  INFO -- : 18 完结专辑 []
+E, [2014-06-11T17:53:13.575677 #5860] ERROR -- : album_updated NameError: uninitialized constant CoreAsync::AlbumUpdatedWorkerMethods::ApprovingAlbum 
+ d:/apps/core_async/lib/core_async/methods/album_updated_worker_methods.rb:326:in `album_updated'
+d:/apps/core_async/lib/core_async/methods/album_updated_worker_methods.rb:8:in `call'
+d:/apps/core_async/lib/core_async/methods/album_updated_worker_methods.rb:8:in `perform'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/processor.rb:52:in `block (2 levels) in process'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/chain.rb:122:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/chain.rb:122:in `block in invoke'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/server/active_record.rb:6:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/chain.rb:124:in `block in invoke'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/server/retry_jobs.rb:62:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/chain.rb:124:in `block in invoke'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/server/logging.rb:11:in `block in call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/logging.rb:22:in `with_context'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/server/logging.rb:7:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/chain.rb:124:in `block in invoke'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/chain.rb:127:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/middleware/chain.rb:127:in `invoke'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/processor.rb:51:in `block in process'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/processor.rb:94:in `stats'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/sidekiq-3.0.2/lib/sidekiq/processor.rb:50:in `process'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/celluloid-0.15.2/lib/celluloid/calls.rb:25:in `public_send'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/celluloid-0.15.2/lib/celluloid/calls.rb:25:in `dispatch'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/celluloid-0.15.2/lib/celluloid/calls.rb:122:in `dispatch'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/celluloid-0.15.2/lib/celluloid/actor.rb:322:in `block in handle_message'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/celluloid-0.15.2/lib/celluloid/actor.rb:416:in `block in task'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/celluloid-0.15.2/lib/celluloid/tasks.rb:55:in `block in initialize'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/celluloid-0.15.2/lib/celluloid/tasks/task_fiber.rb:13:in `block in create'

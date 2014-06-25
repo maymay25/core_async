@@ -1,0 +1,65 @@
+# Logfile created on 2014-05-28 18:39:10 +0800 by logger.rb/41954
+E, [2014-05-28T18:39:10.000212 #11888] ERROR -- : 2014-05-28 18:39:10 +0800 NameError: uninitialized constant Oj 
+ d:/apps/core_async/config/subscribe_lib.rb:32:in `block in subscribe_track_played'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:164:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:164:in `block in on_delivery'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `block in exec_callback'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `each'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `exec_callback'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:299:in `handle_delivery'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:345:in `block in <class:Consumer>'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:967:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:967:in `receive_frameset'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:941:in `receive_frame'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:679:in `receive_data'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/eventmachine-1.0.3-x86-mingw32/lib/eventmachine.rb:187:in `run_machine'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/eventmachine-1.0.3-x86-mingw32/lib/eventmachine.rb:187:in `run'
+sidekiq_subscribe.rb:8:in `<main>'
+E, [2014-05-28T18:39:11.784390 #11888] ERROR -- : 2014-05-28 18:39:11 +0800 NameError: uninitialized constant Oj 
+ d:/apps/core_async/config/subscribe_lib.rb:32:in `block in subscribe_track_played'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:164:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:164:in `block in on_delivery'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `block in exec_callback'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `each'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `exec_callback'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:299:in `handle_delivery'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:345:in `block in <class:Consumer>'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:967:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:967:in `receive_frameset'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:941:in `receive_frame'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:679:in `receive_data'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/eventmachine-1.0.3-x86-mingw32/lib/eventmachine.rb:187:in `run_machine'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/eventmachine-1.0.3-x86-mingw32/lib/eventmachine.rb:187:in `run'
+sidekiq_subscribe.rb:8:in `<main>'
+E, [2014-05-28T18:39:21.082320 #11888] ERROR -- : 2014-05-28 18:39:21 +0800 NameError: uninitialized constant Oj 
+ d:/apps/core_async/config/subscribe_lib.rb:32:in `block in subscribe_track_played'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:164:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:164:in `block in on_delivery'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `block in exec_callback'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `each'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/callbacks.rb:37:in `exec_callback'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:299:in `handle_delivery'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/consumer.rb:345:in `block in <class:Consumer>'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:967:in `call'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:967:in `receive_frameset'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:941:in `receive_frame'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/amqp-1.1.5/lib/amqp/session.rb:679:in `receive_data'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/eventmachine-1.0.3-x86-mingw32/lib/eventmachine.rb:187:in `run_machine'
+c:/Ruby200/lib/ruby/gems/2.0.0/gems/eventmachine-1.0.3-x86-mingw32/lib/eventmachine.rb:187:in `run'
+sidekiq_subscribe.rb:8:in `<main>'
+I, [2014-05-28T18:39:49.111123 #11496]  INFO -- : 2014-05-28 18:39:49 +0800 216016 18
+I, [2014-05-28T18:39:52.077419 #11496]  INFO -- : 2014-05-28 18:39:52 +0800 216014 18
+I, [2014-05-28T18:40:05.453757 #11496]  INFO -- : 2014-05-28 18:40:05 +0800 216099 true
+I, [2014-05-28T18:40:55.117723 #11496]  INFO -- : 2014-05-28 18:40:55 +0800 216019 18
+I, [2014-05-28T18:40:58.074018 #11496]  INFO -- : 2014-05-28 18:40:58 +0800 216016 18
+I, [2014-05-28T18:41:01.144325 #11496]  INFO -- : 2014-05-28 18:41:01 +0800 215004 18
+I, [2014-05-28T18:41:03.272538 #11496]  INFO -- : 2014-05-28 18:41:03 +0800 214611 18
+I, [2014-05-28T18:44:55.563765 #11496]  INFO -- : 2014-05-28 18:44:55 +0800 214611 18
+I, [2014-05-28T20:18:04.877645 #11496]  INFO -- : 2014-05-28 20:18:04 +0800 215194 13091
+I, [2014-05-28T20:21:52.688424 #11496]  INFO -- : 2014-05-28 20:21:52 +0800 199271 13091
+I, [2014-05-28T20:27:31.281280 #11496]  INFO -- : 2014-05-28 20:27:31 +0800 187018 13091
+I, [2014-05-28T20:32:01.125261 #11496]  INFO -- : 2014-05-28 20:32:01 +0800 215194 13091
+I, [2014-05-28T20:50:50.311169 #11496]  INFO -- : 2014-05-28 20:50:50 +0800 214283 13091
